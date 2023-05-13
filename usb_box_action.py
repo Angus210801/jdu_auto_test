@@ -45,17 +45,14 @@ class UsbBoxDriver:
         return rst
 
 class UsbBoxDriver_ubuntu:
-    def __init__(self, usb_driver="CH340"):
+
+    def __init__(self, usb_driver="/dev/ttyUSB0"):
         self.usb_driver = usb_driver
 
     def connect_usb_box(self):
         rst = True
         try:
-            serial_ports = [p for p in os.listdir('/dev/serial/by-id/') if self.usb_driver in p]
-            if not serial_ports:
-                return False
-            serial_port = os.path.realpath('/dev/serial/by-id/' + serial_ports[0])
-            ser = serial.Serial(serial_port, 115200, timeout=1)
+            ser = serial.Serial(self.usb_driver, 115200, timeout=1)
             if not ser.isOpen():
                 ser.open()
             ser.write("0".encode())
@@ -67,11 +64,7 @@ class UsbBoxDriver_ubuntu:
     def disconnect_usb_box(self):
         rst = True
         try:
-            serial_ports = [p for p in os.listdir('/dev/serial/by-id/') if self.usb_driver in p]
-            if not serial_ports:
-                return False
-            serial_port = os.path.realpath('/dev/serial/by-id/' + serial_ports[0])
-            ser = serial.Serial(serial_port, 115200, timeout=1)
+            ser = serial.Serial(self.usb_driver, 115200, timeout=1)
             if not ser.isOpen():
                 ser.open()
             ser.write("1".encode())
