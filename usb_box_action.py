@@ -75,4 +75,4 @@ class UsbBoxDriver_ubuntu:
 
 if __name__ == '__main__':
     usb = UsbBoxDriver_ubuntu()
-    usb.disconnect_usb_box()
+    usb.connect_usb_box()
