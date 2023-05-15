@@ -12,7 +12,7 @@ if __name__ == '__main__':
     while not os.path.exists('/tmp/jdu_log/wget.log'):
         time.sleep(1)
 
-    while ".zip saved" not in open('/tmp/jdu_log/wget.log').read():
+    while ".zip' saved" not in open('/tmp/jdu_log/wget.log').read():
         time.sleep(1)
         print('Download not completed!')
     print('Downlaod completed!')
