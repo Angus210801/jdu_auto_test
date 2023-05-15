@@ -4,13 +4,16 @@ from usb_box_action import *
 import time
 
 def delete_xpress_file():
-    dir_path = 'var/run/jabra'
+    dir_path = 'var/run/jabra/'
     command = "find {} -type f -name 'xpress*' -delete".format(dir_path)
     subprocess.run(command, shell=True)
 
 def delete_logs():
     command = "rm -rf /tmp/jdu_log/*"
     subprocess.run(command, shell=True)
+    command = "rm -rf /tmp/fw/*"
+    subprocess.run(command, shell=True)
+
 
 if __name__ == '__main__':
 
