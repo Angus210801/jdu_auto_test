@@ -3,9 +3,19 @@ import subprocess
 from usb_box_action import *
 import time
 
+def delete_xpress_file():
+    dir_path = 'var/run/jabra'
+    command = "find {} -type f -name 'xpress*' -delete".format(dir_path)
+    subprocess.run(command, shell=True)
+
+def delete_logs():
+    command = "rm -rf /tmp/jdu_log/*"
+    subprocess.run(command, shell=True)
+
 if __name__ == '__main__':
-    subprocess.Popen(['rm', '-rf', '/var/run/jabra/'])
-    subprocess.Popen(['rm', '-rf', '/tmp/jdu_log/'])
+
+    delete_xpress_file()
+    delete_logs()
     os.chdir('/usr/local/gn')
     base_url = "http://192.168.140.95/xpress/sr99/evolve230/16990"
     subprocess.Popen(['./jdu.sh', base_url])
