@@ -5,6 +5,7 @@ import time
 
 if __name__ == '__main__':
 
+    subprocess.Popen(['rm', '-rf', '/var/run/jabra/*'])
     os.chdir('/usr/local/gn')
     base_url = "http://192.168.140.95/xpress/sr99/evolve230/16990"
     subprocess.Popen(['./jdu.sh', base_url])
@@ -18,6 +19,7 @@ if __name__ == '__main__':
     print('Downlaod completed!')
     #when download completed, end the ./jdu.sh process
     subprocess.Popen(['pkill', 'jdu.sh'])
+    subprocess.Popen(['pkill', 'jfwu.sh'])
     # if Download zip completed, then start to unzip the package.
     # The zip is in /var/run/jabra/
     # And it has not stable name, so we need to use characters to match it.
@@ -31,14 +33,15 @@ if __name__ == '__main__':
     else:
         subprocess.Popen(['rm', '-rf', '/tmp/fw/*'])
 
-    subprocess.Popen(['7z', '/var/run/jabra/xpress_package_*.zip', '-pgn123', '-o/tmp/fw'])
+
+    subprocess.Popen(['7z x', '/var/run/jabra/xpress_package_*.zip', '-pgn123', '-o/tmp/fw/'])
 
     # Then we need to update the device via the package in the /tmp/fw,the package is zip file and its name is start with J.
     # So we need to use characters to match it.
     # And the update process is in /usr/local/gn/jfwu
     # So we need to use subprocess to run it. below is the code:
     os.chdir('/usr/local/gn')
-    base_url = "/tmp/fw/J*.zip"
+    base_url = "/tmp/fw/Firmware/J*.zip"
     subprocess.Popen(['./jfwu', base_url])
     # After run the jfwu, we need to wait for the update process to 50%.
     while not os.path.exists('/tmp/jfwu_log/jfwu.log'):
