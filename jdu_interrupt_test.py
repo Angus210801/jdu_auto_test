@@ -4,8 +4,8 @@ from usb_box_action import *
 import time
 
 if __name__ == '__main__':
-
-    subprocess.Popen(['rm', '-rf', '/var/run/jabra/*'])
+    subprocess.Popen(['rm', '-rf', '/var/run/jabra/'])
+    subprocess.Popen(['rm', '-rf', '/tmp/jdu_log/'])
     os.chdir('/usr/local/gn')
     base_url = "http://192.168.140.95/xpress/sr99/evolve230/16990"
     subprocess.Popen(['./jdu.sh', base_url])
@@ -13,7 +13,7 @@ if __name__ == '__main__':
     while not os.path.exists('/tmp/jdu_log/wget.log'):
         time.sleep(1)
 
-    while ".zip' saved" not in open('/tmp/jdu_log/wget.log').read():
+    while "zip’ saved" not in open('/tmp/jdu_log/wget.log').read():
         time.sleep(1)
         print('Download not completed!')
     print('Downlaod completed!')
@@ -34,7 +34,7 @@ if __name__ == '__main__':
         subprocess.Popen(['rm', '-rf', '/tmp/fw/*'])
 
 
-    subprocess.Popen(['7z x', '/var/run/jabra/xpress_package_*.zip', '-pgn123', '-o/tmp/fw/'])
+    subprocess.Popen(['7z','x', '/var/run/jabra/xpress_package_*.zip', '-pgn123', '-o/tmp/fw/'])
 
     # Then we need to update the device via the package in the /tmp/fw,the package is zip file and its name is start with J.
     # So we need to use characters to match it.

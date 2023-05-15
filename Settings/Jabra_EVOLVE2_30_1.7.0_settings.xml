@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<JabraDeviceConfiguration>
+  <settings>
+    <parameter id="5025" name="VOICE_TAGS2" datatype="int" targetGnpAddress="1" requiresConfigMode="False">
+      <gnpCommand packetType="read" command="0x13" subCommand="0x06" dataType="byte" dataStartIndex="1" />
+      <gnpCommand packetType="write" command="0x13" subCommand="0x06" dataType="byte" dataStartIndex="1" />
+      <value>Leave unchanged</value>
+    </parameter>
+    <parameter id="5086" name="BUTTON_SOUNDS" datatype="int" targetGnpAddress="1" requiresConfigMode="False">
+      <gnpCommand packetType="read" command="0x13" subCommand="0x3F" dataType="byte" dataStartIndex="1" />
+      <gnpCommand packetType="write" command="0x13" subCommand="0x3F" dataType="byte" dataStartIndex="1" />
+      <value>Leave unchanged</value>
+    </parameter>
+    <parameter id="4008" name="BUSYLIGHT" datatype="bool" targetGnpAddress="1" requiresConfigMode="False">
+      <gnpCommand packetType="read" command="0x13" subCommand="0x39" dataType="bool" dataStartIndex="1" />
+      <gnpCommand packetType="write" command="0x13" subCommand="0x39" dataType="bool" dataStartIndex="1" />
+      <value>Leave unchanged</value>
+    </parameter>
+    <parameter id="5004" name="INTELLITONE_LEVEL" datatype="int" targetGnpAddress="1" requiresConfigMode="False">
+      <gnpCommand packetType="read" command="0x13" subCommand="0x01" dataType="byte" dataStartIndex="1" />
+      <gnpCommand packetType="write" command="0x13" subCommand="0x01" dataType="byte" dataStartIndex="1" />
+      <value>Leave unchanged</value>
+    </parameter>
+    <parameter id="5080" name="INTELLITONE_SOUND_LEVEL" datatype="int" targetGnpAddress="1" requiresConfigMode="False">
+      <gnpCommand packetType="read" command="0x13" subCommand="0x26" dataType="byte" dataStartIndex="1" />
+      <gnpCommand packetType="write" command="0x13" subCommand="0x26" dataType="byte" dataStartIndex="1" />
+      <value>Leave unchanged</value>
+    </parameter>
+    <parameter id="5051" name="MUTE_REMINDER_INTERVAL" datatype="int" targetGnpAddress="1" requiresConfigMode="False">
+      <gnpCommand packetType="read" command="0x13" subCommand="0x1E" dataType="byte" dataStartIndex="1" />
+      <gnpCommand packetType="write" command="0x13" subCommand="0x1E" dataType="byte" dataStartIndex="1" />
+      <value>Leave unchanged</value>
+    </parameter>
+    <parameter id="5502" name="SIDETONE_MUTE" datatype="bool" targetGnpAddress="1" requiresConfigMode="False">
+      <gnpCommand packetType="read" command="0x13" subCommand="0x85" dataType="bool" dataStartIndex="1" />
+      <gnpCommand packetType="write" command="0x13" subCommand="0x85" dataType="bool" dataStartIndex="1" />
+      <value>Leave unchanged</value>
+    </parameter>
+    <parameter id="5504" name="ASSET_TAG_V2" datatype="string" targetGnpAddress="1" requiresConfigMode="False">
+      <gnpCommand packetType="read" command="0x13" subCommand="0x5B" dataType="utf8StringZeroTerminated" dataLengthIndex="1" dataStartIndex="2" />
+      <gnpCommand packetType="write" command="0x13" subCommand="0x5B" dataType="utf8StringZeroTerminated" dataLengthIndex="1" dataStartIndex="2" />
+      <value>Leave unchanged</value>
+    </parameter>
+    <parameter id="5501" name="SIDETONE_LEVEL" datatype="int" targetGnpAddress="1" requiresConfigMode="False">
+      <gnpCommand packetType="read" command="0x13" subCommand="0x68" dataType="byte" dataStartIndex="1" />
+      <gnpCommand packetType="write" command="0x13" subCommand="0x68" dataType="byte" dataStartIndex="1" />
+      <value>Leave unchanged</value>
+    </parameter>
+    <parameter id="5061" name="HS_RINGER_SOFTPHONE" datatype="bool" targetGnpAddress="1" requiresConfigMode="False">
+      <gnpCommand packetType="read" command="0x13" subCommand="0x13" dataType="bool" dataStartIndex="2" dataPayload="13-00" />
+      <gnpCommand packetType="write" command="0x13" subCommand="0x13" dataType="bool" dataStartIndex="2" dataPayload="13-00-00" />
+      <value>Leave unchanged</value>
+    </parameter>
+    <parameter id="2408" name="SOFTPHONE_INTEGRATION" datatype="bool" targetGnpAddress="1" requiresConfigMode="True">
+      <gnpCommand packetType="read" command="0x13" subCommand="0x4C" dataType="bool" dataStartIndex="1" />
+      <gnpCommand packetType="write" command="0x13" subCommand="0x4C" dataType="bool" dataStartIndex="1" />
+      <value>Leave unchanged</value>
+    </parameter>
+    <parameter id="5016" name="LOGIN_PASSWORD" datatype="binary" targetGnpAddress="1" requiresConfigMode="False">
+      <gnpCommand packetType="read" command="0x13" subCommand="0x04" dataType="byteArray" dataStartIndex="1" />
+      <gnpCommand packetType="write" command="0x13" subCommand="0x04" dataType="byteArray" dataStartIndex="1" />
+      <value>Leave unchanged</value>
+    </parameter>
+  </settings>
+</JabraDeviceConfiguration>
