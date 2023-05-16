@@ -1,10 +1,6 @@
-# python文件只读的时候 -> sudo chmod 777 main.py
 import datetime
 import glob
-import os
 import subprocess
-import time
-#import time
 from urllib.parse import urljoin
 from usb_box_action import *
 
@@ -17,12 +13,12 @@ def get_package_tmp_url():
 
 
 # If there are no files / files, create the files / files (tmp/auto_log/;)
-def create_or_clear_file(file_path):
+def clean_the_test_script_logs(file_path):
     folder_name = "/tmp/auto_log"
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
     if os.path.isfile(file_path):
-        # 如果文件存在，则删除文件中的所有内容
+        # If the file exists, delete everything in the file
         with open(file_path, "w") as f:
             f.seek(0)
             f.truncate()
@@ -53,7 +49,7 @@ def get_url(prepare_case, case_name):
     return prepare_url, case_url
 
 # LOG的輸出格式
-def run_testcase(prepare_case, case_name):
+def run_testcase_settings(prepare_case, case_name):
     with open(file_path, "a") as f:
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"Timestamp: {timestamp}\n")
@@ -74,14 +70,14 @@ def run_testcase(prepare_case, case_name):
         setting_compare(f)
         f.write(f"The test is finished\n\n\n\n")
 
-def run_testcase_disconnect(prepare_case, case_name):
+def run_testcase_update_fw_file(prepare_case, case_name):
     with open(file_path, "a") as f:
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"Timestamp: {timestamp}\n")
         f.write(f"case {case_name} start to run:\n")
         f.write(f"step1:set all settings into default value\n")
         f.flush()
-        # 需要一個降級/同級且將setting設置成default的包
+
         subprocess.Popen(['./jdu.sh', get_url(prepare_case, case_name)[0]], stdout=f)
         with open("/tmp/jdu_log/wget.log") as f:
             while ".zip’ saved" in f.read()==False:
@@ -102,76 +98,64 @@ def run_testcase_disconnect(prepare_case, case_name):
         setting_compare(f)
         f.write(f"The test is finished\n\n\n\n")
 
-'''
-#處理特殊的case -> 中斷設備的升級
-def copy_usbreset():
-    program_dir = os.path.dirname(os.path.abspath(__file__))
-    target_dir = os.path.join(program_dir, 'usbreset-master')
-    os.chdir(target_dir)
-    subprocess.run(['cc', 'usbreset.c', '-o', 'usbreset'], stdout=subprocess.PIPE)
-    sudo_command_1 = 'echo {} | sudo -S {}'.format(password, "sudo cp ./usbreset /usr/sbin/")
-    subprocess.Popen(sudo_command_1,shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    os.chdir('/usr/local/gn')
-    return
-def command_disconnect():
-    result = []
-    file_path = create_or_clear_file("/tmp/auto_log/log_bus")
-    with open(file_path, "a+") as f:
-        subprocess.Popen('lsusb', stdout=f).wait()
-        f.seek(0)
-        for line in f:
-            if "0b0e" in line:
-                result.append(line.strip().split(" "))
-                #print(result)
-    bus_path = "/dev/bus/usb/" + result[0][1] + "/" + result[0][3][:3]
-    usb_reset_cmd = 'sudo /usr/sbin/usbreset ' + bus_path
-    sudo_command = 'echo {} | sudo -S {}'.format(password, usb_reset_cmd)
-    # 执行重启USB控制器的命令
-    os.popen(sudo_command)
-    return
-def execute_disconnect_device(prepare_case, case_name):
+def run_testcase_update_fw_JX_package():
     with open(file_path, "a") as f:
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"Timestamp: {timestamp}\n")
-        f.write(f"\nstep1:case {case_name} prepare work start to run:\n")
+        f.write(f"case {case_name} start to run:\n")
+        f.write(f"step1:set all settings into default value\n")
         f.flush()
-        # 需要一個降級/同級且將setting設置成default的包
-        subprocess.Popen(['./jdu.sh', get_url(prepare_case, case_name)[0]], stdout=f).wait()
-        f.write(f"\nstep2:case {case_name} is start to run,device will be disconnected and re-connected\n")
-        f.flush()
-        time.sleep(10)
-        subprocess.Popen(['./jdu.sh', get_url(prepare_case, case_name)[1]], stdout=f)
-        time.sleep(200)
-        command_disconnect()
-        f.write(f"\nstep4:re-start the upgrade session\n")
-        subprocess.Popen(['./jdu.sh', get_url(prepare_case, case_name)[1]], stdout=f).wait()
-        f.write(f"\n{case_name} finished\n\n\n\n")
-        return
-'''
+
 # def upgrade_throuh_FW():
 #1->down 2->keep
 if __name__ == '__main__':
-    #password = "test@123"
 
-    # copy_usbreset()
+
     os.chdir('/usr/local/gn')
-    file_path = create_or_clear_file("/tmp/auto_log/log")
+    file_path = clean_the_test_script_logs("/tmp/auto_log/log")
     url_tmp = get_package_tmp_url()
-    #16990 in case_list is ID 47971
-    # case_list = [7555,7695,7692,7551,7556]
+    # 16990 in case_list is ID 47971
+    # case_list = [6134,7551,7555,7556,7692,7695]
     # case_list = [7555,7692]
-    case_list=[16990]
-    for case_name in case_list:
-        if case_name==7692:
-            run_testcase(7556, case_name)
-        elif case_name==7695:
-            run_testcase(7556, case_name)
-        elif case_name==7556:
-            run_testcase("7556p", case_name)
-        elif case_name==7555:
-            run_testcase("7555p", case_name)
-        elif case_name==16990:
-            run_testcase("7555p", case_name)
-        else:
-            run_testcase("7551p", case_name)
+    update_fw_case_list = [16990, 16991, 16992, 17950, 17951]
+    upadte_settings_case_list = [16990]
 
+    for case_name in update_fw_case_list:
+        if case_name == 16990:
+            run_testcase_update_fw_JX_package()
+
+
+    for case_name in upadte_settings_case_list:
+        if case_name in [7692, 7695, 7556]:
+            run_testcase_settings("7556p", case_name)
+        elif case_name == 6134:
+            run_testcase_settings("6134p", case_name)
+        elif case_name == 7555 or case_name == 16990:
+            run_testcase_settings("7555p", case_name)
+        else:
+            run_testcase_settings("7551p", case_name)
+
+
+
+'''
+FW Update case:
+
+16990 JXDU:Disconnect the DUT during the FW update.[Use JX Package][Allow downgrade]
+16991 JXDU:Disconnect the DUT during the FW udpate.[Use JX Package][Not allow downgrade]
+
+For this, Place the lower FW to the /home/swtest/Downloads/lowerfw folder.
+
+16992 JXDU:Disconnect the DUT during the FW update,for all individual components.[Use FW File]
+17950 JXDU:Normal FW update without Interruption.[Use FW File](Linux JXDU 6.x or above)
+17951 JXDU:Normal FW Update without Interruption.[Use JX Package](Linux JXDU 6.x or Above)
+
+FW Update & Settings Configure case:
+
+6134 JX-ThinC:All device settings and FW set to "Leave Unchange",all settings set to Protected.
+7692 JX-ThinC:All settings in the device can be change from default value to min.value with installation of .zip file at the end user PC,no FW change.
+7695 JX-ThinC:All settings in the device can be change from default value to max.value with installation of .zip file at the end user PC,no FW change.
+7551 JX-ThinC:Install a ZIP file on end user environment with a later FW and set all settings are changed.
+7555 JX-ThinC:Install a ZIP file on end user environment with a later FW and no setting change.
+7556 JX-ThinC:Install a ZIP file on end user environment with a later FW and set all settings set to default.
+
+'''
