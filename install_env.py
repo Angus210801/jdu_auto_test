@@ -2,7 +2,7 @@ import os
 import re
 import subprocess
 
-result = []  # 保存結果的列表
+result = []  # Keep the result of the command
 
 
 # 如果沒有文件夾就創建文件夾("/tmp/auto_log/")

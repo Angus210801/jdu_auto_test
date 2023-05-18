@@ -1,4 +1,7 @@
+import glob
 import subprocess
+from urllib.parse import urljoin
+from main import url_tmp
 from usb_box_action import *
 import time
 
@@ -34,68 +37,43 @@ def interrupt_update():
         except FileNotFoundError:
             time.sleep(1)
 
-def run_the_test_case():
-    # Delete the logs
-    delete_xpress_file()
-    delete_logs()
-    os.chdir('/usr/local/gn')
-    base_url = "http://192.168.140.95/xpress/sr99/evolve230/16990"
-    process=subprocess.Popen(['./jdu.sh', base_url])
 
 
-    command = "mv /usr/local/gn/jdu_firmware /tmp/fw/"
-    subprocess.run(command, shell=True)
-
-    while not os.path.exists('/tmp/jdu_log/wget.log'):
-        time.sleep(1)
-
-    while "zip’ saved" not in open('/tmp/jdu_log/wget.log').read():
-        time.sleep(1)
-        print('Download not completed!')
-
-    print('Downlaod completed!')
-    #when download completed, end the ./jdu.sh process
-    process.terminate()
+def get_url(prepare_case, case_name):
+    # 使用 urllib.parse.urljoin() 函数拼接 URL,default的包和case的包的路徑分開保存
+    prepare_url = urljoin(url_tmp, str(prepare_case))
+    case_url = urljoin(url_tmp, str(case_name))
+    return prepare_url, case_url
 
 
-    if not os.path.exists('/tmp/fw'):
-        os.makedirs('/tmp/fw')
+def setting_compare(f):
+    dir_path = "/var/run/jabra"
+    file_pattern = "xpress_package_*.zip"
+    file_names = glob.glob(os.path.join(dir_path, file_pattern))
+    cmd = "./jdu_settings"
+    option1 = "-c"
+    option2 = "-V"
+    # 使用 subprocess.Popen() 函数执行命令
+    subprocess.Popen([cmd, option1, option2, file_names[0]], stdout=f).wait()
+
+def get_package_tmp_url():
+    base_url = "http://192.168.140.95/xpress/"
+    tmp = input("Which SR are you in:") + "/" + input("Which device do you use:") + "/"
+    url_tmp = urljoin(base_url, tmp)
+    return url_tmp
+
+
+def clean_the_test_script_logs(file_path):
+    folder_name = "/tmp/auto_log"
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
+    if os.path.isfile(file_path):
+        # If the file exists, delete everything in the file
+        with open(file_path, "w") as f:
+            f.seek(0)
+            f.truncate()
     else:
-        subprocess.Popen(['rm', '-rf', '/tmp/fw/*'])
-
-    time.sleep(2)
-    subprocess.Popen(['7z','x', '/var/run/jabra/xpress_package_*.zip', '-pgn123!', '-o/tmp/fw/'])
-    # Then we need to update the device via the package in the /tmp/fw,the package is zip file and its name is start with J.
-    # So we need to use characters to match it.
-    # And the update process is in /usr/local/gn/jfwu
-    # So we need to use subprocess to run it. below is the code:
-    time.sleep(3)
-    os.chdir('/usr/local/gn')
-    command = "/usr/local/gn/jfwu /tmp/fw/Firmware/J*"
-    subprocess.Popen(command,shell=True)
-    # After run the jfwu, we need to wait for the update process to 50%.
-    # while not os.path.exists('/tmp/jfwu_log/jfwu.log'):
-    #     time.sleep(1)
-    #     print("Update not started")
-
-
-    # Once it is up to 50%, we need to disconnect the usb box.
-    interrupt_update()
-
-    while "100%" not in open('/tmp/jfwu_log/jfwu.log').read():
-        time.sleep(1)
-        print('Update not completed!')
-
-    usber = UsbBoxDriver_ubuntu()
-    usber.connect_usb_box()
-    time.sleep(10)
-    command = "/usr/local/gn/jfwu /tmp/fw/Firmware/J*"
-    subprocess.run(command, shell=True)
-    command = "mv /tmp/fw/Firmware/jdu_firmware /usr/local/gn/"
-    subprocess.run(command, shell=True)
-
-    print('Interrupt update completed!')
-
-
-if __name__ == '__main__':
-    run_the_test_case()
+        # 如果文件不存在，则在指定路径下创建文件
+        with open(file_path, "w") as f:
+            pass
+    return file_path
