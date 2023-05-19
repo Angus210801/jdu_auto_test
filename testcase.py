@@ -31,95 +31,117 @@ def run_testcase_settings(prepare_case, case_name,base_url,tmp):
 
 def run_testcase_interrupt_jx_package(prepare_case, case_name,base_url,tmp):
     with open(log_path, "a") as f:
+        # Print the timestamp to the log file
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"Timestamp: {timestamp}\n")
         f.write(f"case {case_name} start to run:\n")
-        f.write(f"step1:Run the prepare package{prepare_case} for the {case_name}\n")
+        f.write(f"step1:Run the prepare package {prepare_case} for the {case_name}\n")
         f.flush()
 
-        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[0]], stdout=f).wait()
-
-        prepare_case= get_xpress_url(prepare_case, case_name,base_url,tmp)[0]
-        case_name = get_xpress_url(prepare_case, case_name,base_url,tmp)[1]
-
-        f.write(f"{prepare_case}")
-        f.write(f"{case_name}")
-        f.write(f"The prepare case is finished.")
-
-        f.write(f"\nstep2:case {case_name} prepare done, start to run case {case_name}:\n")
-        f.flush()
-        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[1]], stdout=f)
-
+        delete_xpress_file()
         delete_logs()
 
+        os.chdir('/usr/local/gn')
+        # Get the download_url and print the download link to the logs
+        prepare_case_url= get_xpress_url(prepare_case, case_name,base_url,tmp)[0]
+        test_case_url = get_xpress_url(prepare_case, case_name,base_url,tmp)[1]
+        f.write(f"{prepare_case_url}\n")
+        f.write(f"{test_case_url}\n")
+        f.flush()
+
+        # Run the prepare case first
+        subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
+        f.write(f"The prepare case is finished.\n")
+        f.flush()
+
+        # Start to run the test case
+        f.write(f"\nstep2:case {case_name} prepare done, start to run case {case_name}:\n")
+        f.flush()
+        subprocess.Popen(['./jdu.sh', test_case_url], stdout=f)
+
+        # Interrupt the update process
+        delete_logs()
         interrupt_update_jx_package()
 
+        # Wait for the jdu_firmware process to finish
         while "100%" not in open('/tmp/jdu_log/jdu_firmware.log').read():
-            time.sleep(1)
-            print('JDU is still going!')
+            time.sleep(3)
+            print('JDU is still going!\n')
 
         # Reconnect the usb box
         usber = UsbBoxDriver_ubuntu()
         usber.connect_usb_box()
-        time.sleep(10)
+        f.write(f'Usb box is reconnected!\n')
+        f.write(f'Interrupt update completed!\n')
+        f.write(f'Next, re-run the test case!\n')
+        f.flush()
+        # Set up the wait time for the usb box to be ready
+        time.sleep(5)
 
-        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[1]], stdout=f).wait()
-
-        print('Interrupt update completed!')
-
-        f.write(f"{case_name} test is finished.")
+        # Start to re-run the test case
+        subprocess.Popen(['./jdu.sh', test_case_url], stdout=f).wait()
+        f.write(f"{case_name} test is finished.\n")
         # Print the dividing line to the log file
         f.write("------------------------------------------------------------\n\n\n\n")
-
+        f.flush()
 
 def run_testcase_interrupt_fw_file(prepare_case, case_name,base_url,tmp):
     with open(log_path, "a") as f:
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"Timestamp: {timestamp}\n")
         f.write(f"case {case_name} start to run:\n")
-        # Run the prepare case first
+
         f.write(f"step1:set all settings into default value\n")
         f.flush()
+
         # Delete the old log file and old xpress file
         delete_xpress_file()
         delete_logs()
-        os.chdir('/usr/local/gn')
-        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[0]], stdout=f).wait()
+        # Get the download_url and print the download link to the logs
+        prepare_case_url = get_xpress_url(prepare_case, case_name, base_url, tmp)[0]
+        test_case_utl = get_xpress_url(prepare_case, case_name, base_url, tmp)[1]
+        f.write(f"{prepare_case_url}\n")
+        f.write(f"{test_case_utl}\n")
+        f.flush()
 
-        prepare_case = get_xpress_url(prepare_case, case_name, base_url, tmp)[0]
-        case_name = get_xpress_url(prepare_case, case_name, base_url, tmp)[1]
-
-        f.write(f"{prepare_case}")
-        f.write(f"{case_name}")
-        f.write(f"The prepare case is finished.")
-
-        # Move the jdu_firmware file to /tmp/fw because the jdu.sh will call the jdu_firmware process.
-        command = "mv /usr/local/gn/jdu_firmware /tmp/fw/"
-        subprocess.run(command, shell=True)
-
-        # Run the test case
-        process=subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[1]], stdout=f)
-        # Wait until the download is completed
-        while not os.path.exists('/tmp/jdu_log/wget.log'):
-            time.sleep(1)
-        while "zip’ saved" not in open('/tmp/jdu_log/wget.log').read():
-            time.sleep(1)
-            f.write('Download not completed!')
-
-        f.write('Downlaod completed!')
-
-        #when download completed, end the ./jdu.sh process
-        process.terminate()
-
+        # Prepare work for clean the old fw file.
         if not os.path.exists('/tmp/fw'):
             os.makedirs('/tmp/fw')
         else:
             subprocess.Popen(['rm', '-rf', '/tmp/fw/*'])
 
-        time.sleep(2)
-        subprocess.Popen(['7z','x', '/var/run/jabra/xpress_package_*.zip', '-pgn123!', '-o/tmp/fw/'])
+        os.chdir('/usr/local/gn')
+        subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
+        f.write(f"The prepare case is run finished.")
+        f.flush()
 
-        time.sleep(3)
+        delete_xpress_file()
+        delete_logs()
+        # Move the jdu_firmware file to /tmp/fw because the jdu.sh will call the jdu_firmware process.
+        command = "mv /usr/local/gn/jdu_firmware /tmp/fw/"
+        subprocess.Popen(command, shell=True).wait()
+        f.write(f'jdu_firmware process is moved to /tmp/fw\n')
+
+        # Run the test case
+        process=subprocess.Popen(['./jdu.sh',test_case_utl], stdout=f)
+        # Wait until the download is completed
+        while not os.path.exists('/tmp/jdu_log/wget.log'):
+            time.sleep(1)
+        while "zip’ saved" not in open('/tmp/jdu_log/wget.log').read():
+            time.sleep(2)
+            f.write(f'Download not completed!\n')
+
+        f.write(f'Downlaod completed!\n')
+
+        #when download completed, end the ./jdu.sh process
+        process.terminate()
+        f.flush(f'Terminate the process once the download complete.\n')
+        time.sleep(2)
+
+        subprocess.Popen(['7z','x', '/var/run/jabra/xpress_package_*.zip', '-pgn123!', '-o/tmp/fw/']).wait()
+        f.flush(f'The pacakge has unzip to the /tmp/fw\n')
+        time.sleep(2)
+
         os.chdir('/usr/local/gn')
         command = "/usr/local/gn/jfwu /tmp/fw/Firmware/J*"
         subprocess.Popen(command,shell=True)
@@ -130,22 +152,23 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name,base_url,tmp):
         # Wait until the jdu is reported update failed.
         while "100%" not in open('/tmp/jfwu_log/jfwu.log').read():
             time.sleep(1)
-            print('JDU is still going!')
-
+            f.write(f'JDU is still going!\n')
+            f.flush()
         # Reconnect the usb box
         usber = UsbBoxDriver_ubuntu()
         usber.connect_usb_box()
-        time.sleep(10)
+        time.sleep(5)
 
 
         command = "/usr/local/gn/jfwu /tmp/fw/Firmware/J*"
         subprocess.run(command, shell=True)
-        command = "mv /tmp/fw/Firmware/jdu_firmware /usr/local/gn/"
+        command = "mv /tmp/fw/jdu_firmware /usr/local/gn/"
         subprocess.run(command, shell=True)
 
         f.write('Interrupt update completed!')
 
         f.write(f"{case_name} test is finished.")
+        f.flush()
         # Print the dividing line to the log file
         f.write("------------------------------------------------------------\n\n\n\n")
 
@@ -158,17 +181,20 @@ def run_testcase_update_jx_package(prepare_case, case_name,base_url,tmp):
         f.write(f"step1:Run the prepare package{prepare_case} for the {case_name}\n")
         f.flush()
 
-        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[0]], stdout=f).wait()
+        delete_xpress_file()
+        delete_logs()
+        # Get the download_url and print the download link to the logs
+        prepare_case_url = get_xpress_url(prepare_case, case_name, base_url, tmp)[0]
+        test_case_utl = get_xpress_url(prepare_case, case_name, base_url, tmp)[1]
+        f.write(f"{prepare_case_url}\n")
+        f.write(f"{test_case_utl}\n")
+        f.flush()
+        subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
 
-        print(get_xpress_url(prepare_case, case_name,base_url,tmp)[0])
-        print(get_xpress_url(prepare_case, case_name,base_url,tmp)[1])
-        print("The prepare case is finished.")
 
         f.write(f"\nstep2:case {case_name} prepare done, start to run case {case_name}:\n")
         f.flush()
-        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[1]], stdout=f).wait()
-
-        print('Interrupt update completed!')
+        subprocess.Popen(['./jdu.sh', test_case_utl], stdout=f).wait()
 
         f.write(f"{case_name} test is finished.")
         # Print the dividing line to the log file
@@ -179,57 +205,69 @@ def run_testcase_update_fw_file(prepare_case, case_name,base_url,tmp):
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"Timestamp: {timestamp}\n")
         f.write(f"case {case_name} start to run:\n")
-        # Run the prepare case first
+
         f.write(f"step1:set all settings into default value\n")
         f.flush()
+
         # Delete the old log file and old xpress file
         delete_xpress_file()
         delete_logs()
-        os.chdir('/usr/local/gn')
-        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[0]], stdout=f).wait()
+        # Get the download_url and print the download link to the logs
+        prepare_case_url = get_xpress_url(prepare_case, case_name, base_url, tmp)[0]
+        test_case_utl = get_xpress_url(prepare_case, case_name, base_url, tmp)[1]
+        f.write(f"{prepare_case_url}\n")
+        f.write(f"{test_case_utl}\n")
+        f.flush()
 
-        print(get_xpress_url(prepare_case, case_name,base_url,tmp)[0])
-        print(get_xpress_url(prepare_case, case_name,base_url,tmp)[1])
-        print("The prepare case is finished.")
-
-        # Move the jdu_firmware file to /tmp/fw because the jdu.sh will call the jdu_firmware process.
-        command = "mv /usr/local/gn/jdu_firmware /tmp/fw/"
-        subprocess.run(command, shell=True)
-
-        # Run the test case
-        process=subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[1]], stdout=f)
-        # Wait until the download is completed
-        while not os.path.exists('/tmp/jdu_log/wget.log'):
-            time.sleep(1)
-        while "zip’ saved" not in open('/tmp/jdu_log/wget.log').read():
-            time.sleep(1)
-            print('Download not completed!')
-        print('Downlaod completed!')
-
-        #when download completed, end the ./jdu.sh process
-        process.terminate()
-
+        # Prepare work for clean the old fw file.
         if not os.path.exists('/tmp/fw'):
             os.makedirs('/tmp/fw')
         else:
             subprocess.Popen(['rm', '-rf', '/tmp/fw/*'])
 
-        time.sleep(2)
-        subprocess.Popen(['7z','x', '/var/run/jabra/xpress_package_*.zip', '-pgn123!', '-o/tmp/fw/'])
+        os.chdir('/usr/local/gn')
+        subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
+        f.write(f"The prepare case is run finished.")
+        f.flush()
 
-        time.sleep(3)
+        delete_xpress_file()
+        delete_logs()
+        # Move the jdu_firmware file to /tmp/fw because the jdu.sh will call the jdu_firmware process.
+        command = "mv /usr/local/gn/jdu_firmware /tmp/fw/"
+        subprocess.Popen(command, shell=True).wait()
+        f.write(f'jdu_firmware process is moved to /tmp/fw\n')
+
+        # Run the test case
+        process=subprocess.Popen(['./jdu.sh',test_case_utl], stdout=f)
+        # Wait until the download is completed
+        while not os.path.exists('/tmp/jdu_log/wget.log'):
+            time.sleep(1)
+        while "zip’ saved" not in open('/tmp/jdu_log/wget.log').read():
+            time.sleep(2)
+            f.write(f'Download not completed!\n')
+
+        f.write(f'Downlaod completed!\n')
+
+        #when download completed, end the ./jdu.sh process
+        process.terminate()
+        f.flush(f'Terminate the process once the download complete.\n')
+        time.sleep(2)
+
+        subprocess.Popen(['7z','x', '/var/run/jabra/xpress_package_*.zip', '-pgn123!', '-o/tmp/fw/']).wait()
+        f.flush(f'The pacakge has unzip to the /tmp/fw\n')
+        time.sleep(2)
+
         os.chdir('/usr/local/gn')
         command = "/usr/local/gn/jfwu /tmp/fw/Firmware/J*"
         subprocess.Popen(command,shell=True)
 
         command = "/usr/local/gn/jfwu /tmp/fw/Firmware/J*"
         subprocess.run(command, shell=True)
-        command = "mv /tmp/fw/Firmware/jdu_firmware /usr/local/gn/"
+        command = "mv /tmp/fw/jdu_firmware /usr/local/gn/"
         subprocess.run(command, shell=True)
 
-        print('Interrupt update completed!')
-
         f.write(f"{case_name} test is finished.")
+        f.flush()
         # Print the dividing line to the log file
         f.write("------------------------------------------------------------\n\n\n\n")
 
