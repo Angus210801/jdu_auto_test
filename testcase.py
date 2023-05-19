@@ -39,13 +39,15 @@ def run_testcase_interrupt_jx_package(prepare_case, case_name,base_url,tmp):
 
         subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[0]], stdout=f).wait()
 
-        print(get_xpress_url(prepare_case, case_name,base_url,tmp)[0])
-        print(get_xpress_url(prepare_case, case_name,base_url,tmp)[1])
-        print("The prepare case is finished.")
+        f.write(({get_xpress_url(prepare_case, case_name,base_url,tmp)[0]}))
+        f.write(({get_xpress_url(prepare_case, case_name,base_url,tmp)[1]}))
+        f.write("The prepare case is finished.")
 
         f.write(f"\nstep2:case {case_name} prepare done, start to run case {case_name}:\n")
         f.flush()
         subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[1]], stdout=f)
+
+        delete_logs()
 
         interrupt_update_jx_package()
 
