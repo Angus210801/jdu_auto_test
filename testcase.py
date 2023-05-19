@@ -3,7 +3,7 @@ from usb_box_action import *
 import subprocess
 import datetime
 
-def run_testcase_settings(prepare_case, case_name):
+def run_testcase_settings(prepare_case, case_name,base_url,tmp):
     with open(log_path, "a") as f:
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"Timestamp: {timestamp}\n")
@@ -11,17 +11,17 @@ def run_testcase_settings(prepare_case, case_name):
         # Run the prepare case first
         f.write(f"step1:Run the prepare package{prepare_case} for the {case_name}\n")
         f.flush()
-        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name)[0]], stdout=f).wait()
+        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[0]], stdout=f).wait()
         # Print the download link to the terminal for debug, below 2 sentences can be deleted
-        print(get_xpress_url(prepare_case, case_name)[0])
-        print(get_xpress_url(prepare_case, case_name)[1])
+        print(get_xpress_url(prepare_case, case_name,base_url,tmp)[0])
+        print(get_xpress_url(prepare_case, case_name,base_url,tmp)[1])
         # Compare the settings before and after the prepare case
         f.write(f"Now, check the device settings is in prepare status: \n")
         setting_compare(f)
         # Run the test case
         f.write(f"\nstep2:case {case_name} prepare done, start to run case {case_name}:\n")
         f.flush()
-        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name)[1]], stdout=f).wait()
+        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[1]], stdout=f).wait()
         f.write(f"\nstep3:check if the settings changed correctly:\n")
         f.flush()
         setting_compare(f)
@@ -29,7 +29,7 @@ def run_testcase_settings(prepare_case, case_name):
         # Print the dividing line to the log file
         f.write("------------------------------------------------------------\n\n\n\n")
 
-def run_testcase_interrupt_jx_package(prepare_case, case_name):
+def run_testcase_interrupt_jx_package(prepare_case, case_name,base_url,tmp):
     with open(log_path, "a") as f:
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"Timestamp: {timestamp}\n")
@@ -37,15 +37,15 @@ def run_testcase_interrupt_jx_package(prepare_case, case_name):
         f.write(f"step1:Run the prepare package{prepare_case} for the {case_name}\n")
         f.flush()
 
-        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name)[0]], stdout=f)
+        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[0]], stdout=f)
 
-        print(get_xpress_url(prepare_case, case_name)[0])
-        print(get_xpress_url(prepare_case, case_name)[1])
+        print(get_xpress_url(prepare_case, case_name,base_url,tmp)[0])
+        print(get_xpress_url(prepare_case, case_name,base_url,tmp)[1])
         print("The prepare case is finished.")
 
         f.write(f"\nstep2:case {case_name} prepare done, start to run case {case_name}:\n")
         f.flush()
-        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name)[1]], stdout=f)
+        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[1]], stdout=f)
 
         interrupt_update_jx_package()
 
@@ -58,7 +58,7 @@ def run_testcase_interrupt_jx_package(prepare_case, case_name):
         usber.connect_usb_box()
         time.sleep(10)
 
-        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name)[1]], stdout=f).wait()
+        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[1]], stdout=f).wait()
 
         print('Interrupt update completed!')
 
@@ -67,7 +67,7 @@ def run_testcase_interrupt_jx_package(prepare_case, case_name):
         f.write("------------------------------------------------------------\n\n\n\n")
 
 
-def run_testcase_interrupt_fw_file(prepare_case, case_name):
+def run_testcase_interrupt_fw_file(prepare_case, case_name,base_url,tmp):
     with open(log_path, "a") as f:
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"Timestamp: {timestamp}\n")
@@ -79,10 +79,10 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name):
         delete_xpress_file()
         delete_logs()
         os.chdir('/usr/local/gn')
-        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name)[0]], stdout=f).wait()
+        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[0]], stdout=f).wait()
 
-        print(get_xpress_url(prepare_case, case_name)[0])
-        print(get_xpress_url(prepare_case, case_name)[1])
+        print(get_xpress_url(prepare_case, case_name,base_url,tmp)[0])
+        print(get_xpress_url(prepare_case, case_name,base_url,tmp)[1])
         print("The prepare case is finished.")
 
         # Move the jdu_firmware file to /tmp/fw because the jdu.sh will call the jdu_firmware process.
@@ -90,7 +90,7 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name):
         subprocess.run(command, shell=True)
 
         # Run the test case
-        process=subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name)[1]], stdout=f)
+        process=subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[1]], stdout=f)
         # Wait until the download is completed
         while not os.path.exists('/tmp/jdu_log/wget.log'):
             time.sleep(1)
@@ -141,7 +141,7 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name):
         f.write("------------------------------------------------------------\n\n\n\n")
 
 
-def run_testcase_update_jx_package(prepare_case, case_name):
+def run_testcase_update_jx_package(prepare_case, case_name,base_url,tmp):
     with open(log_path, "a") as f:
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"Timestamp: {timestamp}\n")
@@ -149,15 +149,15 @@ def run_testcase_update_jx_package(prepare_case, case_name):
         f.write(f"step1:Run the prepare package{prepare_case} for the {case_name}\n")
         f.flush()
 
-        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name)[0]], stdout=f)
+        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[0]], stdout=f)
 
-        print(get_xpress_url(prepare_case, case_name)[0])
-        print(get_xpress_url(prepare_case, case_name)[1])
+        print(get_xpress_url(prepare_case, case_name,base_url,tmp)[0])
+        print(get_xpress_url(prepare_case, case_name,base_url,tmp)[1])
         print("The prepare case is finished.")
 
         f.write(f"\nstep2:case {case_name} prepare done, start to run case {case_name}:\n")
         f.flush()
-        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name)[1]], stdout=f).wait()
+        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[1]], stdout=f).wait()
 
         print('Interrupt update completed!')
 
@@ -165,7 +165,7 @@ def run_testcase_update_jx_package(prepare_case, case_name):
         # Print the dividing line to the log file
         f.write("------------------------------------------------------------\n\n\n\n")
 
-def run_testcase_update_fw_file(prepare_case, case_name):
+def run_testcase_update_fw_file(prepare_case, case_name,base_url,tmp):
     with open(log_path, "a") as f:
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"Timestamp: {timestamp}\n")
@@ -177,10 +177,10 @@ def run_testcase_update_fw_file(prepare_case, case_name):
         delete_xpress_file()
         delete_logs()
         os.chdir('/usr/local/gn')
-        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name)[0]], stdout=f).wait()
+        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[0]], stdout=f).wait()
 
-        print(get_xpress_url(prepare_case, case_name)[0])
-        print(get_xpress_url(prepare_case, case_name)[1])
+        print(get_xpress_url(prepare_case, case_name,base_url,tmp)[0])
+        print(get_xpress_url(prepare_case, case_name,base_url,tmp)[1])
         print("The prepare case is finished.")
 
         # Move the jdu_firmware file to /tmp/fw because the jdu.sh will call the jdu_firmware process.
@@ -188,7 +188,7 @@ def run_testcase_update_fw_file(prepare_case, case_name):
         subprocess.run(command, shell=True)
 
         # Run the test case
-        process=subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name)[1]], stdout=f)
+        process=subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[1]], stdout=f)
         # Wait until the download is completed
         while not os.path.exists('/tmp/jdu_log/wget.log'):
             time.sleep(1)
@@ -229,30 +229,33 @@ def run_testcase_update_fw_file(prepare_case, case_name):
 if __name__ == '__main__':
     os.chdir('/usr/local/gn')
     log_path = create_log_file("/tmp/auto_log/log")
-
+    
+    base_url = "http://192.168.140.95/xpress/"
+    tmp = input("Which SR are you in:") + "/" + input("Which device do you use:") + "/"
+    
     update_fw_case_list = [16990, 16991, 16992, 17950, 17951]
     upadte_settings_case_list = [6134, 7692, 7695, 7551, 7555, 7556]
 
     for case_name in update_fw_case_list:
         if case_name == 16992:
-            run_testcase_interrupt_fw_file("7556p", case_name)
+            run_testcase_interrupt_fw_file("7556p", case_name,base_url,tmp)
         elif case_name in [16990, 16991]:
-            run_testcase_interrupt_jx_package("7556p", case_name)
+            run_testcase_interrupt_jx_package("7556p", case_name,base_url,tmp)
         elif case_name == 17950:
-            run_testcase_update_fw_file("7556p", case_name)
+            run_testcase_update_fw_file("7556p", case_name,base_url,tmp)
         else:
-            run_testcase_update_jx_package("7556p", case_name)
+            run_testcase_update_jx_package("7556p", case_name,base_url,tmp)
 
 
     for case_name in upadte_settings_case_list:
         if case_name in [7692, 7695, 7556]:
-            run_testcase_settings("7556p", case_name)
+            run_testcase_settings("7556p", case_name,base_url,tmp)
         elif case_name == 6134:
-            run_testcase_settings("6134p", case_name)
+            run_testcase_settings("6134p", case_name,base_url,tmp)
         elif case_name == 7555 or case_name == 16990:
-            run_testcase_settings("7555p", case_name)
+            run_testcase_settings("7555p", case_name,base_url,tmp)
         else:
-            run_testcase_settings("7551p", case_name)
+            run_testcase_settings("7551p", case_name,base_url,tmp)
 
 '''
 Group01 : FW Update case:

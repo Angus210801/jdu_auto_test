@@ -63,14 +63,13 @@ def interrupt_update_jx_package():
                     usber.disconnect_usb_box()
                     print("Disconnect the device.")
                     break
-            time.sleep(1)
+                time.sleep(1)
         except FileNotFoundError:
             time.sleep(1)
 
 
-def get_xpress_url(prepare_case, case_name):
-    base_url = "http://192.168.140.95/xpress/"
-    tmp = input("Which SR are you in:") + "/" + input("Which device do you use:") + "/"
+def get_xpress_url(prepare_case, case_name,base_url,tmp):
+
     package_dir = urljoin(base_url, tmp)
     prepare_url = urljoin(package_dir, str(prepare_case))
     case_url = urljoin(package_dir, str(case_name))
