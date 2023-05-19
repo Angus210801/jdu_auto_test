@@ -18,11 +18,13 @@ def delete_logs():
         subprocess.run(command, shell=True)
     except:
         print("No jdu log file in the /tmp/jdu_log/ folder")
+
     try:
         command = "rm -rf /tmp/fw/*"
         subprocess.run(command, shell=True)
     except:
         print("No fw file in the /tmp/fw/ folder")
+
     try:
         command = "rm -rf /tmp/jfwu_log/*"
         subprocess.run(command, shell=True)

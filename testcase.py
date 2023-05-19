@@ -81,9 +81,9 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name,base_url,tmp):
         os.chdir('/usr/local/gn')
         subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[0]], stdout=f).wait()
 
-        print(get_xpress_url(prepare_case, case_name,base_url,tmp)[0])
-        print(get_xpress_url(prepare_case, case_name,base_url,tmp)[1])
-        print("The prepare case is finished.")
+        f.write(({get_xpress_url(prepare_case, case_name,base_url,tmp)[0]}))
+        f.write(({get_xpress_url(prepare_case, case_name,base_url,tmp)[1]}))
+        f.write("The prepare case is finished.")
 
         # Move the jdu_firmware file to /tmp/fw because the jdu.sh will call the jdu_firmware process.
         command = "mv /usr/local/gn/jdu_firmware /tmp/fw/"
@@ -96,8 +96,9 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name,base_url,tmp):
             time.sleep(1)
         while "zip’ saved" not in open('/tmp/jdu_log/wget.log').read():
             time.sleep(1)
-            print('Download not completed!')
-        print('Downlaod completed!')
+            f.write('Download not completed!')
+
+        f.write('Downlaod completed!')
 
         #when download completed, end the ./jdu.sh process
         process.terminate()
@@ -134,7 +135,7 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name,base_url,tmp):
         command = "mv /tmp/fw/Firmware/jdu_firmware /usr/local/gn/"
         subprocess.run(command, shell=True)
 
-        print('Interrupt update completed!')
+        f.write('Interrupt update completed!')
 
         f.write(f"{case_name} test is finished.")
         # Print the dividing line to the log file
