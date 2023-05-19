@@ -57,6 +57,10 @@ def run_testcase_interrupt_jx_package(prepare_case, case_name,base_url,tmp):
         # Start to run the test case
         f.write(f"\nstep2:case {case_name} prepare done, start to run case {case_name}:\n")
         f.flush()
+
+        command = "rm -rf /tmp/jdu_log/*"
+        subprocess.run(command, shell=True)
+
         subprocess.Popen(['./jdu.sh', test_case_url], stdout=f)
 
         # Interrupt the update process
@@ -66,8 +70,6 @@ def run_testcase_interrupt_jx_package(prepare_case, case_name,base_url,tmp):
         judge_jdu_process_ongoing()
 
         # Reconnect the usb box
-        usber = UsbBoxDriver_ubuntu()
-        usber.connect_usb_box()
         f.write(f'Usb box is reconnected!\n')
         f.write(f'Interrupt update completed!\n')
         f.write(f'Next, re-run the test case!\n')

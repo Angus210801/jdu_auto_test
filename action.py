@@ -56,8 +56,7 @@ def judge_jdu_process_ongoing():
                 content = file.read()
                 if target_text in content:
                     usber = UsbBoxDriver_ubuntu()
-                    usber.disconnect_usb_box()
-                    print("Disconnect the device.")
+                    usber.connect_usb_box()
                     break
 
             time.sleep(1)
