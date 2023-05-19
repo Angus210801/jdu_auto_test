@@ -1,7 +1,6 @@
 import glob
 import subprocess
 from urllib.parse import urljoin
-from testcase import package_dir
 from usb_box_action import *
 import time
 
@@ -55,7 +54,7 @@ def interrupt_update_jx_package():
     target_text = "40%"
     while True:
         try:
-            with open(log_file, "r") as file:
+             with open(log_file, "r") as file:
                 content = file.read()
                 print(content)
 
@@ -70,8 +69,9 @@ def interrupt_update_jx_package():
 
 
 def get_xpress_url(prepare_case, case_name):
-    # 使用 urllib.parse.urljoin() 函数拼接 URL,default的包和case的包的路徑分開保存
-    package_dir=get_test_xpress_dir
+    base_url = "http://192.168.140.95/xpress/"
+    tmp = input("Which SR are you in:") + "/" + input("Which device do you use:") + "/"
+    package_dir = urljoin(base_url, tmp)
     prepare_url = urljoin(package_dir, str(prepare_case))
     case_url = urljoin(package_dir, str(case_name))
     return prepare_url, case_url
@@ -87,11 +87,6 @@ def setting_compare(f):
     # 使用 subprocess.Popen() 函数执行命令
     subprocess.Popen([cmd, option1, option2, file_names[0]], stdout=f).wait()
 
-def get_test_xpress_dir():
-    base_url = "http://192.168.140.95/xpress/"
-    tmp = input("Which SR are you in:") + "/" + input("Which device do you use:") + "/"
-    url_tmp = urljoin(base_url, tmp)
-    return url_tmp
 
 
 def create_log_file(file_path):
