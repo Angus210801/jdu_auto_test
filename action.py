@@ -1,7 +1,7 @@
 import glob
 import subprocess
 from urllib.parse import urljoin
-from main import package_dir
+from testcase import package_dir
 from usb_box_action import *
 import time
 
@@ -71,6 +71,7 @@ def interrupt_update_jx_package():
 
 def get_xpress_url(prepare_case, case_name):
     # 使用 urllib.parse.urljoin() 函数拼接 URL,default的包和case的包的路徑分開保存
+    package_dir=get_test_xpress_dir
     prepare_url = urljoin(package_dir, str(prepare_case))
     case_url = urljoin(package_dir, str(case_name))
     return prepare_url, case_url

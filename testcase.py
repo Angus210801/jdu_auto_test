@@ -1,4 +1,4 @@
-from jdu_interrupt_test import *
+from action import *
 from usb_box_action import *
 import subprocess
 import datetime
@@ -229,7 +229,6 @@ def run_testcase_update_fw_file(prepare_case, case_name):
 if __name__ == '__main__':
     os.chdir('/usr/local/gn')
     log_path = create_log_file("/tmp/auto_log/log")
-    package_dir = get_test_xpress_dir()
 
     update_fw_case_list = [16990, 16991, 16992, 17950, 17951]
     upadte_settings_case_list = [6134, 7692, 7695, 7551, 7555, 7556]
