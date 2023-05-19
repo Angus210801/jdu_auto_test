@@ -37,7 +37,7 @@ def run_testcase_interrupt_jx_package(prepare_case, case_name,base_url,tmp):
         f.write(f"step1:Run the prepare package{prepare_case} for the {case_name}\n")
         f.flush()
 
-        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[0]], stdout=f)
+        subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[0]], stdout=f).wait()
 
         print(get_xpress_url(prepare_case, case_name,base_url,tmp)[0])
         print(get_xpress_url(prepare_case, case_name,base_url,tmp)[1])
