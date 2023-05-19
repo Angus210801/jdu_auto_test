@@ -38,8 +38,6 @@ def interrupt_update_fw_file():
         try:
             with open(log_file, "r") as file:
                 content = file.read()
-                print(content)
-
                 if target_text in content:
                     usber = UsbBoxDriver_ubuntu()
                     usber.disconnect_usb_box()
@@ -49,7 +47,22 @@ def interrupt_update_fw_file():
             time.sleep(1)
         except FileNotFoundError:
             time.sleep(1)
+def judge_jdu_process_ongoing():
+    log_file = "/tmp/jdu_log/jdu_firmware.log"
+    target_text = "100%"
+    while True:
+        try:
+            with open(log_file, "r") as file:
+                content = file.read()
+                if target_text in content:
+                    usber = UsbBoxDriver_ubuntu()
+                    usber.disconnect_usb_box()
+                    print("Disconnect the device.")
+                    break
 
+            time.sleep(1)
+        except FileNotFoundError:
+            time.sleep(1)
 
 def interrupt_update_jx_package():
     log_file = "/tmp/jdu_log/jdu_firmware.log"
@@ -58,8 +71,6 @@ def interrupt_update_jx_package():
         try:
              with open(log_file, "r") as file:
                 content = file.read()
-                print(content)
-
                 if target_text in content:
                     usber = UsbBoxDriver_ubuntu()
                     usber.disconnect_usb_box()
