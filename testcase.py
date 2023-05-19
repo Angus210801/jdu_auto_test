@@ -39,8 +39,11 @@ def run_testcase_interrupt_jx_package(prepare_case, case_name,base_url,tmp):
 
         subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[0]], stdout=f).wait()
 
-        f.write(({get_xpress_url(prepare_case, case_name,base_url,tmp)[0]}))
-        f.write(({get_xpress_url(prepare_case, case_name,base_url,tmp)[1]}))
+        prepare_case= get_xpress_url(prepare_case, case_name,base_url,tmp)[0]
+        case_name = get_xpress_url(prepare_case, case_name,base_url,tmp)[1]
+
+        f.write(({prepare_case}))
+        f.write(({case_name}))
         f.write("The prepare case is finished.")
 
         f.write(f"\nstep2:case {case_name} prepare done, start to run case {case_name}:\n")
@@ -83,8 +86,11 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name,base_url,tmp):
         os.chdir('/usr/local/gn')
         subprocess.Popen(['./jdu.sh', get_xpress_url(prepare_case, case_name,base_url,tmp)[0]], stdout=f).wait()
 
-        f.write(({get_xpress_url(prepare_case, case_name,base_url,tmp)[0]}))
-        f.write(({get_xpress_url(prepare_case, case_name,base_url,tmp)[1]}))
+        prepare_case = get_xpress_url(prepare_case, case_name, base_url, tmp)[0]
+        case_name = get_xpress_url(prepare_case, case_name, base_url, tmp)[1]
+
+        f.write(({prepare_case}))
+        f.write(({case_name}))
         f.write("The prepare case is finished.")
 
         # Move the jdu_firmware file to /tmp/fw because the jdu.sh will call the jdu_firmware process.
