@@ -42,9 +42,9 @@ def run_testcase_interrupt_jx_package(prepare_case, case_name,base_url,tmp):
         prepare_case= get_xpress_url(prepare_case, case_name,base_url,tmp)[0]
         case_name = get_xpress_url(prepare_case, case_name,base_url,tmp)[1]
 
-        f.write(({prepare_case}))
-        f.write(({case_name}))
-        f.write("The prepare case is finished.")
+        f.write(f"{prepare_case}")
+        f.write(f"{case_name}")
+        f.write(f"The prepare case is finished.")
 
         f.write(f"\nstep2:case {case_name} prepare done, start to run case {case_name}:\n")
         f.flush()
@@ -89,9 +89,9 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name,base_url,tmp):
         prepare_case = get_xpress_url(prepare_case, case_name, base_url, tmp)[0]
         case_name = get_xpress_url(prepare_case, case_name, base_url, tmp)[1]
 
-        f.write(({prepare_case}))
-        f.write(({case_name}))
-        f.write("The prepare case is finished.")
+        f.write(f"{prepare_case}")
+        f.write(f"{case_name}")
+        f.write(f"The prepare case is finished.")
 
         # Move the jdu_firmware file to /tmp/fw because the jdu.sh will call the jdu_firmware process.
         command = "mv /usr/local/gn/jdu_firmware /tmp/fw/"
