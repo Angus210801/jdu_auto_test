@@ -1,13 +1,17 @@
 import os
 import subprocess
 
+
+"""
+This file is used to interrupt the update process of Jabra device by restarting the USB bus.
+But after discuss with Younger, we decide to use the usb box to interrupt the update process.
+Just keep this file for future use.
+"""
+
 result = []  # Keep the result of the command
 
-
-# 如果沒有文件夾就創建文件夾("/tmp/auto_log/")
 def create_or_clear_file(file_path):
     if os.path.isfile(file_path):
-        # 如果文件存在，则删除文件中的所有内容
         with open(file_path, "w") as f:
             f.seek(0)
             f.truncate()
