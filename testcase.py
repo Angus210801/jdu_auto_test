@@ -134,7 +134,7 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name,base_url,tmp):
 
         #when download completed, end the ./jdu.sh process
         process.terminate()
-        f.flush(f'Terminate the process once the download complete.\n')
+        f.flush(f'Terminate the process once the download complete\n')
         time.sleep(2)
 
         subprocess.Popen(['7z','x', '/var/run/jabra/xpress_package_*.zip', '-pgn123!', '-o/tmp/fw/']).wait()

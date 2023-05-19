@@ -1,5 +1,4 @@
 import os
-import re
 import subprocess
 
 result = []  # Keep the result of the command
