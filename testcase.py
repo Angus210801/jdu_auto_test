@@ -60,13 +60,13 @@ def run_testcase_interrupt_jx_package(prepare_case, case_name,base_url,tmp):
         subprocess.Popen(['./jdu.sh', test_case_url], stdout=f)
 
         # Interrupt the update process
-        delete_logs()
         interrupt_update_jx_package()
 
         # Wait for the jdu_firmware process to finish
         while "100%" not in open('/tmp/jdu_log/jdu_firmware.log').read():
             time.sleep(3)
-            print('JDU is still going!\n')
+            f.write(f'JDU is still going!')
+            f.flush()
 
         # Reconnect the usb box
         usber = UsbBoxDriver_ubuntu()
