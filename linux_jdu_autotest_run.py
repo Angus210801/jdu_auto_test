@@ -17,7 +17,7 @@
 """
 
 from linux_jdu_autotest_setup import *
-from linux_jdu_autotest_usb_box import *
+from linux_jdu_autotest_usb_box_older import *
 import subprocess
 import datetime
 
@@ -155,11 +155,11 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name, base_url, tmp):
 
         # when download completed, end the ./jdu.sh process
         process.terminate()
-        f.flush(f'Terminate the process once the download complete\n')
         time.sleep(2)
 
         subprocess.Popen(['7z', 'x', '/var/run/jabra/xpress_package_*.zip', '-pgn123!', '-o/tmp/fw/']).wait()
-        f.flush(f'The pacakge has unzip to the /tmp/fw\n')
+        f.write(f'Unzip the xpress package completed!\n')
+        f.flush()
         time.sleep(2)
 
         os.chdir('/usr/local/gn')
@@ -190,6 +190,7 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name, base_url, tmp):
         f.flush()
         # Print the dividing line to the log file
         f.write("------------------------------------------------------------\n\n\n\n")
+        f.flush()
 
 
 def run_testcase_update_jx_package(prepare_case, case_name, base_url, tmp):
@@ -303,13 +304,13 @@ if __name__ == '__main__':
 
     for case_name in update_fw_case_list:
         if case_name == 16992:
-            run_testcase_interrupt_fw_file("7556p", case_name, base_url, tmp)
+            run_testcase_interrupt_fw_file("16990p", case_name, base_url, tmp)
         elif case_name in [16990, 16991]:
-            run_testcase_interrupt_jx_package("7556p", case_name, base_url, tmp)
+            run_testcase_interrupt_jx_package("16990p", case_name, base_url, tmp)
         elif case_name == 17950:
-            run_testcase_update_fw_file("7556p", case_name, base_url, tmp)
+            run_testcase_update_fw_file("16990p", case_name, base_url, tmp)
         else:
-            run_testcase_update_jx_package("7556p", case_name, base_url, tmp)
+            run_testcase_update_jx_package("16990", case_name, base_url, tmp)
 
     for case_name in upadte_settings_case_list:
         if case_name in [7692, 7695, 7556]:

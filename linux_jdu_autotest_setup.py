@@ -1,7 +1,7 @@
 import glob
 import subprocess
 from urllib.parse import urljoin
-from linux_jdu_autotest_usb_box import *
+from linux_jdu_autotest_usb_box_older import *
 import time
 
 def delete_xpress_file():
