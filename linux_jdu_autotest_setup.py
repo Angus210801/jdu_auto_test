@@ -30,7 +30,7 @@ def delete_xpress_file():
     except:
         print("No Xpress file")
 
-def delete_logs():
+def delete_jduandjfwu_logs():
     try:
         command = "rm -rf /tmp/jdu_log/*"
         subprocess.run(command, shell=True)

@@ -80,7 +80,7 @@ def run_testcase_interrupt_jx_package(prepare_case, case_name, base_url, tmp):
         f.flush()
 
         delete_xpress_file()
-        delete_logs()
+        delete_jduandjfwu_logs()
 
         os.chdir('/usr/local/gn')
         # Get the download_url and print the download link to the logs
@@ -148,7 +148,7 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name, base_url, tmp):
 
         # Delete the old log file and old xpress file
         delete_xpress_file()
-        delete_logs()
+        delete_jduandjfwu_logs()
         # Get the download_url and print the download link to the logs
         prepare_case_url = get_xpress_url(prepare_case, case_name, base_url, tmp)[0]
         test_case_utl = get_xpress_url(prepare_case, case_name, base_url, tmp)[1]
@@ -171,7 +171,7 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name, base_url, tmp):
         f.flush()
 
         delete_xpress_file()
-        delete_logs()
+        delete_jduandjfwu_logs()
         # Move the jdu_firmware file to /tmp/fw because the jdu.sh will call the jdu_firmware process.
         command = "mv /usr/local/gn/jdu_firmware /tmp/jdufirmware/"
         subprocess.Popen(command, shell=True).wait()
@@ -245,7 +245,7 @@ def run_testcase_update_jx_package(prepare_case, case_name, base_url, tmp):
         f.flush()
 
         delete_xpress_file()
-        delete_logs()
+        delete_jduandjfwu_logs()
         # Get the download_url and print the download link to the logs
         prepare_case_url = get_xpress_url(prepare_case, case_name, base_url, tmp)[0]
         test_case_utl = get_xpress_url(prepare_case, case_name, base_url, tmp)[1]
@@ -275,7 +275,7 @@ def run_testcase_update_fw_file(prepare_case, case_name, base_url, tmp):
 
         # Delete the old log file and old xpress file
         delete_xpress_file()
-        delete_logs()
+        delete_jduandjfwu_logs()
         # Get the download_url and print the download link to the logs
         prepare_case_url = get_xpress_url(prepare_case, case_name, base_url, tmp)[0]
         test_case_utl = get_xpress_url(prepare_case, case_name, base_url, tmp)[1]
@@ -299,7 +299,7 @@ def run_testcase_update_fw_file(prepare_case, case_name, base_url, tmp):
         f.flush()
 
         delete_xpress_file()
-        delete_logs()
+        delete_jduandjfwu_logs()
         # Move the jdu_firmware file to /tmp/fw because the jdu.sh will call the jdu_firmware process.
         command = "mv /usr/local/gn/jdu_firmware /tmp/jdufirmware/"
         subprocess.Popen(command, shell=True).wait()
