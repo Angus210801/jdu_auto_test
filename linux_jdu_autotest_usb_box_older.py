@@ -1,3 +1,22 @@
+"""
+#-------------------------------------------------------------------
+#                   CONFIDENTIAL --- Linux JDU auto test script
+#-------------------------------------------------------------------
+#
+#                   @Project Name : Sisyphus
+#
+#                   @File Name    : linux_jdu_setup
+#
+#                   @Programmer   : Ezreal/Angus
+#
+#                   @Start Date   : 2023/04/24
+#
+#                   @Last Update  : 2021/05/19
+#
+#                   @Note: This is the new usb box code that works on the test now.
+#-------------------------------------------------------------------
+"""
+
 import os
 import re
 import time

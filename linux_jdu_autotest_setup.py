@@ -1,7 +1,25 @@
+"""
+#-------------------------------------------------------------------
+#                   CONFIDENTIAL --- Linux JDU auto test script
+#-------------------------------------------------------------------
+#
+#                   @Project Name : Sisyphus
+#
+#                   @File Name    : linux_jdu_setup
+#
+#                   @Programmer   : Angus/Ella
+#
+#                   @Start Date   : 2023/04/24
+#
+#                   @Last Update  : 2021/05/19
+#
+#-------------------------------------------------------------------
+"""
+
 import glob
 import subprocess
 from urllib.parse import urljoin
-from linux_jdu_autotest_usb_box_older import *
+from linux_jdu_autotest_usb_box_new import *
 import time
 
 def delete_xpress_file():
@@ -33,7 +51,7 @@ def delete_logs():
 
 def interrupt_update_fw_file():
     log_file = "/tmp/jfwu_log/jfwu.log"
-    target_text = "40%"
+    target_text = "55%"
     while True:
         try:
             with open(log_file, "r") as file:
@@ -65,7 +83,7 @@ def judge_jdu_process_ongoing():
 
 def interrupt_update_jx_package():
     log_file = "/tmp/jdu_log/jdu_firmware.log"
-    target_text = "40%"
+    target_text = "55%"
     while True:
         try:
              with open(log_file, "r") as file:

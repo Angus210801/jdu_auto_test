@@ -1,11 +1,31 @@
+"""
+#-------------------------------------------------------------------
+#                   CONFIDENTIAL --- Linux JDU auto test script
+#-------------------------------------------------------------------
+#
+#                   @Project Name : Sisyphus
+#
+#                   @File Name    : linux_jdu_setup
+#
+#                   @Programmer   : Ella
+#
+#                   @Start Date   : 2023/04/24
+#
+#                   @Last Update  : 2021/05/19
+#
+#This file is used to interrupt the update process of Jabra device by restarting the USB bus.
+#But after discuss with Younger, we decide to use the usb box to interrupt the update process.
+#Just keep this file for future use.
+#
+#-------------------------------------------------------------------
+"""
+
 import os
 import subprocess
 
 
 """
-This file is used to interrupt the update process of Jabra device by restarting the USB bus.
-But after discuss with Younger, we decide to use the usb box to interrupt the update process.
-Just keep this file for future use.
+
 """
 
 result = []  # Keep the result of the command
