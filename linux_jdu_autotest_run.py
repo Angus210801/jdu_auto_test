@@ -15,6 +15,7 @@
 #
 #-------------------------------------------------------------------
 """
+import os
 
 from linux_jdu_autotest_setup import *
 from linux_jdu_autotest_usb_box_new import *
@@ -161,6 +162,9 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name, base_url, tmp):
         else:
             subprocess.Popen(['rm', '-rf', '/tmp/fw/*'])
 
+        if not os.path.exists('/tmp/jdufirmware'):
+            os.makedirs('/tmp/jdufirmware')
+
         os.chdir('/usr/local/gn')
         subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
         f.write(f"The prepare case is run finished.")
@@ -169,7 +173,7 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name, base_url, tmp):
         delete_xpress_file()
         delete_logs()
         # Move the jdu_firmware file to /tmp/fw because the jdu.sh will call the jdu_firmware process.
-        command = "mv /usr/local/gn/jdu_firmware /tmp/fw/"
+        command = "mv /usr/local/gn/jdu_firmware /tmp/jdufirmware/"
         subprocess.Popen(command, shell=True).wait()
         f.write(f'jdu_firmware process is moved to /tmp/fw\n')
 
@@ -203,8 +207,6 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name, base_url, tmp):
         # Wait until the jdu is reported update failed.
         while "100%" not in open('/tmp/jfwu_log/jfwu.log').read():
             time.sleep(1)
-            f.write(f'JDU is still going!\n')
-            f.flush()
         # Reconnect the usb box
         usber = UsbBoxDriver_ubuntu()
         usber.connect_usb_box()
@@ -212,7 +214,7 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name, base_url, tmp):
 
         command = "/usr/local/gn/jfwu /tmp/fw/Firmware/J*"
         subprocess.run(command, shell=True)
-        command = "mv /tmp/fw/jdu_firmware /usr/local/gn/"
+        command = "mv /tmp/jdufirmware/jdu_firmware /usr/local/gn/"
         subprocess.run(command, shell=True)
 
         f.write('Interrupt update completed!')
@@ -332,7 +334,8 @@ if __name__ == '__main__':
     base_url = "http://192.168.140.95/xpress/"
     tmp = input("Which SR are you in:") + "/" + input("Which device do you use:") + "/"
 
-    update_fw_case_list = [16990, 16991, 16992, 17950, 17951]
+    #update_fw_case_list = [16990, 16991, 16992, 17950, 17951]
+    update_fw_case_list = [16992, 17950, 17951]
     upadte_settings_case_list = [6134, 7692, 7695, 7551, 7555, 7556]
 
     for case_name in update_fw_case_list:
