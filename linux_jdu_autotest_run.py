@@ -352,18 +352,20 @@ if __name__ == '__main__':
     update_fw_case_list = [17950, 17951]
     upadte_settings_case_list = [6134, 7692, 7695, 7551, 7555, 7556]
 
-    for case_name in update_fw_case_list:
-        if case_name == 16992:
-            run_testcase_interrupt_fw_file("16990p", case_name, base_url, tmp)
-        elif case_name in [16990, 16991]:
-            run_testcase_interrupt_jx_package("16990p", case_name, base_url, tmp)
-        elif case_name == 17950:
-            run_testcase_update_fw_file("16990p", case_name, base_url, tmp)
-        else:
-            run_testcase_update_jx_package("16990p", case_name, base_url, tmp)
+    # for case_name in update_fw_case_list:
+    #     if case_name == 16992:
+    #         run_testcase_interrupt_fw_file("16990p", case_name, base_url, tmp)
+    #     elif case_name in [16990, 16991]:
+    #         run_testcase_interrupt_jx_package("16990p", case_name, base_url, tmp)
+    #     elif case_name == 17950:
+    #         run_testcase_update_fw_file("16990p", case_name, base_url, tmp)
+    #     else:
+    #         run_testcase_update_jx_package("16990p", case_name, base_url, tmp)
 
     for case_name in upadte_settings_case_list:
-        if case_name in [7692, 7695, 7556]:
+        if case_name in [7692, 7695]:
+            update_settings_testcase("7556", case_name, base_url, tmp)
+        elif case_name == 7556:
             update_settings_testcase("7556p", case_name, base_url, tmp)
         elif case_name == 6134:
             update_settings_testcase("6134p", case_name, base_url, tmp)
