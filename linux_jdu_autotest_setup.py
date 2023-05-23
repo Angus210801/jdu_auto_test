@@ -51,7 +51,7 @@ def delete_logs():
 
 def interrupt_update_fw_file():
     log_file = "/tmp/jfwu_log/jfwu.log"
-    target_text = "55%"
+    target_text = "60%"
     while True:
         try:
             with open(log_file, "r") as file:
@@ -83,7 +83,7 @@ def judge_jdu_process_ongoing():
 
 def interrupt_update_jx_package():
     log_file = "/tmp/jdu_log/jdu_firmware.log"
-    target_text = "55%"
+    target_text = "60%"
     while True:
         try:
              with open(log_file, "r") as file:
