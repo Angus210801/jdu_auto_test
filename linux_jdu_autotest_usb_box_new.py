@@ -87,7 +87,7 @@ class UsbBoxDriver_ubuntu:
         rst = True
         try:
             serial_port = "/dev/ttyUSB0"
-            ser = serial.Serial(serial_port, 115200, timeout=1)
+            ser = serial.Serial(serial_port, 9600, timeout=1)
             if not ser.isOpen():
                 ser.open()
             ser.write(bytes.fromhex(open_channel1_str))
@@ -103,7 +103,7 @@ class UsbBoxDriver_ubuntu:
         rst = True
         try:
             serial_port = "/dev/ttyUSB0"
-            ser = serial.Serial(serial_port, 115200, timeout=1)
+            ser = serial.Serial(serial_port, 9600, timeout=1)
             if not ser.isOpen():
                 ser.open()
             ser.write(bytes.fromhex(close_channel1_str))
