@@ -94,7 +94,8 @@ class UsbBoxDriver_ubuntu:
             time.sleep(0.1)
             ser.write(bytes.fromhex(open_channel4_str))
             time.sleep(10)
-        except:
+        except Exception as e:
+            print(e)
             rst = False
         return rst
 
