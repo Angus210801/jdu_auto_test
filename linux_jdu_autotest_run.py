@@ -199,14 +199,21 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name, base_url, tmp):
 
         os.chdir('/usr/local/gn')
         command = "/usr/local/gn/jfwu /tmp/fw/Firmware/J*"
-        subprocess.Popen(command, shell=True)
+        process=subprocess.Popen(command, shell=True)
 
         # Once it is up to 40%, we need to disconnect the usb box.
         interrupt_update_fw_file()
 
+        time_account=0
         # Wait until the jdu is reported update failed.
         while "100%" not in open('/tmp/jfwu_log/jfwu.log').read():
             time.sleep(1)
+            time_account += 1
+            if time_account > 120:
+                f.write(f'Update failed!\n')
+                f.flush()
+                process.terminate()
+                break
         # Reconnect the usb box
         usber = UsbBoxDriver_ubuntu()
         usber.connect_usb_box()
@@ -279,6 +286,10 @@ def run_testcase_update_fw_file(prepare_case, case_name, base_url, tmp):
         else:
             subprocess.Popen(['rm', '-rf', '/tmp/fw/*'])
 
+        if not os.path.exists('/tmp/jdufirmware'):
+            os.makedirs('/tmp/jdufirmware')
+
+
         os.chdir('/usr/local/gn')
         subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
         f.write(f"The prepare case is run finished.")
@@ -287,7 +298,7 @@ def run_testcase_update_fw_file(prepare_case, case_name, base_url, tmp):
         delete_xpress_file()
         delete_logs()
         # Move the jdu_firmware file to /tmp/fw because the jdu.sh will call the jdu_firmware process.
-        command = "mv /usr/local/gn/jdu_firmware /tmp/fw/"
+        command = "mv /usr/local/gn/jdu_firmware /tmp/jdufirmware"
         subprocess.Popen(command, shell=True).wait()
         f.write(f'jdu_firmware process is moved to /tmp/fw\n')
 
@@ -304,7 +315,8 @@ def run_testcase_update_fw_file(prepare_case, case_name, base_url, tmp):
 
         # when download completed, end the ./jdu.sh process
         process.terminate()
-        f.flush(f'Terminate the process once the download complete.\n')
+        f.write(f'Terminate the process once the download complete.\n')
+        f.flush()
         time.sleep(2)
 
         subprocess.Popen(['7z', 'x', '/var/run/jabra/xpress_package_*.zip', '-pgn123!', '-o/tmp/fw/']).wait()
@@ -318,7 +330,7 @@ def run_testcase_update_fw_file(prepare_case, case_name, base_url, tmp):
         command = "/usr/local/gn/jfwu /tmp/fw/Firmware/J*"
         subprocess.run(command, shell=True)
 
-        command = "mv /tmp/fw/jdu_firmware /usr/local/gn/"
+        command = "mv /tmp/jdufirmware/jdu_firmware /usr/local/gn/"
         subprocess.run(command, shell=True)
 
         f.write(f"{case_name} test is finished.")
