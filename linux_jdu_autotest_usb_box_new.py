@@ -114,5 +114,5 @@ class UsbBoxDriver_ubuntu:
         return rst
 
 if __name__ == '__main__':
-    usb = UsbBoxDriver()
+    usb = UsbBoxDriver_ubuntu()
     usb.connect_usb_box()
