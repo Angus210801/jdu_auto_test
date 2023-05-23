@@ -183,13 +183,16 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name, base_url, tmp):
         while not os.path.exists('/tmp/jdu_log/wget.log'):
             time.sleep(1)
         while "zip’ saved" not in open('/tmp/jdu_log/wget.log').read():
-            time.sleep(2)
-            f.write(f'Download not completed!\n')
+            time.sleep(3)
+            f.write(f'{case_name} JX package download not completed!\n')
 
-        f.write(f'Downlaod completed!\n')
+        f.write(f'JX package downlaod completed!\n')
 
         # when download completed, end the ./jdu.sh process
         process.terminate()
+
+        f.write(f'This firmware update failed is because of the interrupt jdu update,we just want to download the fw package from server.\n')
+
         time.sleep(2)
 
         subprocess.Popen(['7z', 'x', '/var/run/jabra/xpress_package_*.zip', '-pgn123!', '-o/tmp/fw/']).wait()
@@ -292,15 +295,16 @@ def run_testcase_update_fw_file(prepare_case, case_name, base_url, tmp):
 
         os.chdir('/usr/local/gn')
         subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
-        f.write(f"The prepare case is run finished.")
+        f.write(f"The prepare case is run finished\n")
         f.flush()
 
         delete_xpress_file()
         delete_logs()
         # Move the jdu_firmware file to /tmp/fw because the jdu.sh will call the jdu_firmware process.
-        command = "mv /usr/local/gn/jdu_firmware /tmp/jdufirmware"
+        command = "mv /usr/local/gn/jdu_firmware /tmp/jdufirmware/"
         subprocess.Popen(command, shell=True).wait()
-        f.write(f'jdu_firmware process is moved to /tmp/fw\n')
+        f.write(f'jdu_firmware process is moved to /tmp/jdufirmware/\n')
+        f.flush()
 
         # Run the test case
         process = subprocess.Popen(['./jdu.sh', test_case_utl], stdout=f)
@@ -320,7 +324,8 @@ def run_testcase_update_fw_file(prepare_case, case_name, base_url, tmp):
         time.sleep(2)
 
         subprocess.Popen(['7z', 'x', '/var/run/jabra/xpress_package_*.zip', '-pgn123!', '-o/tmp/fw/']).wait()
-        f.flush(f'The pacakge has unzip to the /tmp/fw\n')
+        f.write(f'The pacakge has unzip to the /tmp/fw\n')
+        f.flush()
         time.sleep(2)
 
         os.chdir('/usr/local/gn')
@@ -347,7 +352,7 @@ if __name__ == '__main__':
     tmp = input("Which SR are you in:") + "/" + input("Which device do you use:") + "/"
 
     #update_fw_case_list = [16990, 16991, 16992, 17950, 17951]
-    update_fw_case_list = [16992, 17950, 17951]
+    update_fw_case_list = [17950, 17951]
     upadte_settings_case_list = [6134, 7692, 7695, 7551, 7555, 7556]
 
     for case_name in update_fw_case_list:
