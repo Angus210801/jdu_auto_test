@@ -270,7 +270,7 @@ def run_testcase_update_fw_file(prepare_case, case_name, base_url, tmp):
         f.write(f"Timestamp: {timestamp}\n")
         f.write(f"case {case_name} start to run:\n")
 
-        f.write(f"step1:set all settings into default value\n")
+        f.write(f"step1:Downgrade the device fw to the lower fw.\n")
         f.flush()
 
         # Delete the old log file and old xpress file
@@ -315,7 +315,7 @@ def run_testcase_update_fw_file(prepare_case, case_name, base_url, tmp):
             time.sleep(2)
             f.write(f'Download not completed!\n')
 
-        f.write(f'Downlaod completed!\n')
+        f.write(f'{case_name} JX package downlaod completed!\n')
 
         # when download completed, end the ./jdu.sh process
         process.terminate()
@@ -323,17 +323,14 @@ def run_testcase_update_fw_file(prepare_case, case_name, base_url, tmp):
         f.flush()
         time.sleep(2)
 
-        subprocess.Popen(['7z', 'x', '/var/run/jabra/xpress_package_*.zip', '-pgn123!', '-o/tmp/fw/']).wait()
+        subprocess.run(['7z', 'x', '/var/run/jabra/xpress_package_*.zip', '-pgn123!', '-o/tmp/fw/'])
         f.write(f'The pacakge has unzip to the /tmp/fw\n')
         f.flush()
-        time.sleep(2)
+        time.sleep(5)
 
         os.chdir('/usr/local/gn')
         command = "/usr/local/gn/jfwu /tmp/fw/Firmware/J*"
-        subprocess.Popen(command, shell=True)
-
-        command = "/usr/local/gn/jfwu /tmp/fw/Firmware/J*"
-        subprocess.run(command, shell=True)
+        subprocess.Popen(command, shell=True).wait()
 
         command = "mv /tmp/jdufirmware/jdu_firmware /usr/local/gn/"
         subprocess.run(command, shell=True)
@@ -363,7 +360,7 @@ if __name__ == '__main__':
         elif case_name == 17950:
             run_testcase_update_fw_file("16990p", case_name, base_url, tmp)
         else:
-            run_testcase_update_jx_package("16990", case_name, base_url, tmp)
+            run_testcase_update_jx_package("16990p", case_name, base_url, tmp)
 
     for case_name in upadte_settings_case_list:
         if case_name in [7692, 7695, 7556]:
