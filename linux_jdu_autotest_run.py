@@ -23,7 +23,7 @@ import subprocess
 import datetime
 
 
-def update_settings_testcase(prepare_case, case_name, base_url, tmp):
+def run_testcase_update_settings(prepare_case, case_name, base_url, tmp):
     with open(log_path, "a") as f:
         # Output the information to the terminal window
         print('Start to run the test case: {}'.format(case_name))
@@ -348,31 +348,33 @@ if __name__ == '__main__':
     base_url = "http://192.168.140.95/xpress/"
     tmp = input("Which SR are you in:") + "/" + input("Which device do you use:") + "/"
 
-    #update_fw_case_list = [16990, 16991, 16992, 17950, 17951]
-    update_fw_case_list = [17950, 17951]
+    update_fw_case_list = [16990, 16991, 16992, 17950, 17951]
     upadte_settings_case_list = [6134, 7692, 7695, 7551, 7555, 7556]
 
-    # for case_name in update_fw_case_list:
-    #     if case_name == 16992:
-    #         run_testcase_interrupt_fw_file("16990p", case_name, base_url, tmp)
-    #     elif case_name in [16990, 16991]:
-    #         run_testcase_interrupt_jx_package("16990p", case_name, base_url, tmp)
-    #     elif case_name == 17950:
-    #         run_testcase_update_fw_file("16990p", case_name, base_url, tmp)
-    #     else:
-    #         run_testcase_update_jx_package("16990p", case_name, base_url, tmp)
+    for case_name in update_fw_case_list:
+        if case_name == 16992:
+            run_testcase_interrupt_fw_file("16990p", case_name, base_url, tmp)
+        elif case_name in [16990, 16991]:
+            run_testcase_interrupt_jx_package("16990p", case_name, base_url, tmp)
+        elif case_name == 17950:
+            run_testcase_update_fw_file("16990p", case_name, base_url, tmp)
+        else:
+            run_testcase_update_jx_package("16990p", case_name, base_url, tmp)
+
+    print("FW update case is finished.\n")
+    print("Start to run the settings update case.\n")
 
     for case_name in upadte_settings_case_list:
         if case_name in [7692, 7695]:
-            update_settings_testcase("7556", case_name, base_url, tmp)
+            run_testcase_update_settings("7556", case_name, base_url, tmp)
         elif case_name == 7556:
-            update_settings_testcase("7556p", case_name, base_url, tmp)
+            run_testcase_update_settings("7556p", case_name, base_url, tmp)
         elif case_name == 6134:
-            update_settings_testcase("6134p", case_name, base_url, tmp)
+            run_testcase_update_settings("6134p", case_name, base_url, tmp)
         elif case_name == 7555 or case_name == 16990:
-            update_settings_testcase("7555p", case_name, base_url, tmp)
+            run_testcase_update_settings("7555p", case_name, base_url, tmp)
         else:
-            update_settings_testcase("7551p", case_name, base_url, tmp)
+            run_testcase_update_settings("7551p", case_name, base_url, tmp)
 
 '''
 Group01 : FW Update case:
