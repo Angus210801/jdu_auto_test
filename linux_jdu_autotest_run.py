@@ -348,10 +348,11 @@ if __name__ == '__main__':
     log_path = create_log_file("/tmp/auto_log/log")
 
     base_url = "http://192.168.140.95/xpress/"
-
     tmp = input("Which SR are you in:") + "/"
     device_name=input("Which device do you use:")
     tmp = tmp + device_name +  "/"
+
+    # should add a judgement that if the network or others lead the download failed, stop run.
 
     update_fw_case_list = [16990, 16991, 16992, 17950, 17951]
     update_settings_case_list = [6134, 7692, 7695, 7551, 7555, 7556]
@@ -385,7 +386,7 @@ if __name__ == '__main__':
 
     end_time = time.time()
     total_time = end_time - start_time
-    print("Test finish, the test run time is: "+ total_time)
+    print("Test finish, the test run time is: "+ str(total_time))
 
 
 
