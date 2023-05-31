@@ -128,7 +128,12 @@ def create_log_file(file_path):
             f.seek(0)
             f.truncate()
     else:
-        # 如果文件不存在，则在指定路径下创建文件
+        # If file not exist, create it.
         with open(file_path, "w") as f:
             pass
     return file_path
+
+def rename_log_file(new_file_name):
+    old_file_path = "/tmp/auto_log/log"
+    new_file_path = f"/tmp/auto_log/{new_file_name}_log"
+    os.rename(old_file_path, new_file_path)

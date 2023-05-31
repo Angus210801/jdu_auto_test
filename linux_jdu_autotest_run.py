@@ -342,14 +342,19 @@ def run_testcase_update_fw_file(prepare_case, case_name, base_url, tmp):
         print('Test case {} is finished.'.format(case_name))
 
 if __name__ == '__main__':
+    start_time = time.time()
+
     os.chdir('/usr/local/gn')
     log_path = create_log_file("/tmp/auto_log/log")
 
     base_url = "http://192.168.140.95/xpress/"
-    tmp = input("Which SR are you in:") + "/" + input("Which device do you use:") + "/"
+
+    tmp = input("Which SR are you in:") + "/"
+    device_name=input("Which device do you use:")
+    tmp = tmp + device_name +  "/"
 
     update_fw_case_list = [16990, 16991, 16992, 17950, 17951]
-    upadte_settings_case_list = [6134, 7692, 7695, 7551, 7555, 7556]
+    update_settings_case_list = [6134, 7692, 7695, 7551, 7555, 7556]
 
     for case_name in update_fw_case_list:
         if case_name == 16992:
@@ -364,7 +369,7 @@ if __name__ == '__main__':
     print("FW update case is finished.\n")
     print("Start to run the settings update case.\n")
 
-    for case_name in upadte_settings_case_list:
+    for case_name in update_settings_case_list:
         if case_name in [7692, 7695]:
             run_testcase_update_settings("7556", case_name, base_url, tmp)
         elif case_name == 7556:
@@ -375,6 +380,14 @@ if __name__ == '__main__':
             run_testcase_update_settings("7555p", case_name, base_url, tmp)
         else:
             run_testcase_update_settings("7551p", case_name, base_url, tmp)
+
+    rename_log_file(device_name)
+
+    end_time = time.time()
+    total_time = end_time - start_time
+    print("Test finish, the test run time is: "+ total_time)
+
+
 
 '''
 Group01 : FW Update case:
