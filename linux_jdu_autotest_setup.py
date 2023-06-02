@@ -11,7 +11,7 @@
 #
 #                   @Start Date   : 2023/04/24
 #
-#                   @Last Update  : 2021/05/19
+#                   @Last Update  : 2023/05/19
 #
 #-------------------------------------------------------------------
 """
@@ -65,6 +65,8 @@ def interrupt_update_fw_file():
             time.sleep(1)
         except FileNotFoundError:
             time.sleep(1)
+
+
 def judge_jdu_process_ongoing():
     log_file = "/tmp/jdu_log/jdu_firmware.log"
     target_text = "100%"
@@ -113,9 +115,8 @@ def setting_compare(f):
     cmd = "./jdu_settings"
     option1 = "-c"
     option2 = "-V"
-    # 使用 subprocess.Popen() 函数执行命令
+    # Use the subprocess command to compare the device settings.
     subprocess.Popen([cmd, option1, option2, file_names[0]], stdout=f).wait()
-
 
 
 def create_log_file(file_path):
