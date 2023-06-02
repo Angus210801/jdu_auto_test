@@ -16,11 +16,15 @@
 #-------------------------------------------------------------------
 """
 import os
+import sys
+
+import requests
 
 from linux_jdu_autotest_setup import *
 from linux_jdu_autotest_usb_box_new import *
 import subprocess
 import datetime
+from linux_jdu_autotest_sendlog_email import *
 
 
 def run_testcase_update_settings(prepare_case, case_name, base_url, tmp):
@@ -341,6 +345,8 @@ def run_testcase_update_fw_file(prepare_case, case_name, base_url, tmp):
         f.write("------------------------------------------------------------\n\n\n\n")
         print('Test case {} is finished.'.format(case_name))
 
+
+
 if __name__ == '__main__':
     start_time = time.time()
 
@@ -352,7 +358,18 @@ if __name__ == '__main__':
     device_name=input("Which device are you test:")
     server_address = server_address + device_name + "/"
 
-    # should add a judgement that if the network or others lead the download failed, stop run.
+    # Before test, shoud try to judge the address is correct or not.
+    # If the conne
+    try:
+        response = requests.get(base_url)
+        if response.status_code == 200:
+            print("The base url is correct!")
+        else:
+            print("The base url is not correct!")
+    except:
+        sys.exit()
+
+
 
     if device_name == 'panacast20':
         update_fw_case_list = [17950, 17951]
@@ -416,6 +433,13 @@ if __name__ == '__main__':
 
     end_time = time.time()
     total_time = end_time - start_time
+
+    switch_network()
+    sleep(15)
+    send_email(device_name)
+    sleep(15)
+    recover_network()
+
     print("Test finish, the test run time is: "+ str(total_time))
 
 
