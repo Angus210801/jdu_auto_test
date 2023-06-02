@@ -66,7 +66,7 @@ def run_testcase_interrupt_jx_package(prepare_case, case_name, base_url, tmp):
         1. Download the lower fw package from the server.
         2. Run the lower fw package.
         3. Run the test case fw package from the server.
-        4. When update to the 55%, interrupt the update.
+        4. When update to the 60%, interrupt the update.
         5. Connect the usb box again.
         6. Run the test case jx package again.
     """
@@ -348,39 +348,69 @@ if __name__ == '__main__':
     log_path = create_log_file("/tmp/auto_log/log")
 
     base_url = "http://192.168.140.95/xpress/"
-    tmp = input("Which SR are you in:") + "/"
-    device_name=input("Which device do you use:")
-    tmp = tmp + device_name +  "/"
+    server_address = input("Which SR are you in:") + "/"
+    device_name=input("Which device are you test:")
+    server_address = server_address + device_name + "/"
 
     # should add a judgement that if the network or others lead the download failed, stop run.
 
-    update_fw_case_list = [16990, 16991, 16992, 17950, 17951]
-    update_settings_case_list = [6134, 7692, 7695, 7551, 7555, 7556]
+    if device_name == 'panacast20':
+        update_fw_case_list = [17950, 17951]
+        update_settings_case_list = [6134, 7692, 7695, 7551, 7555, 7556]
 
-    for case_name in update_fw_case_list:
-        if case_name == 16992:
-            run_testcase_interrupt_fw_file("16990p", case_name, base_url, tmp)
-        elif case_name in [16990, 16991]:
-            run_testcase_interrupt_jx_package("16990p", case_name, base_url, tmp)
-        elif case_name == 17950:
-            run_testcase_update_fw_file("16990p", case_name, base_url, tmp)
-        else:
-            run_testcase_update_jx_package("16990p", case_name, base_url, tmp)
+        for case_name in update_fw_case_list:
+            if case_name == 16992:
+                run_testcase_interrupt_fw_file("16990p", case_name, base_url, server_address)
+            elif case_name in [16990, 16991]:
+                run_testcase_interrupt_jx_package("16990p", case_name, base_url, server_address)
+            elif case_name == 17950:
+                run_testcase_update_fw_file("16990p", case_name, base_url, server_address)
+            else:
+                run_testcase_update_jx_package("16990p", case_name, base_url, server_address)
 
-    print("FW update case is finished.\n")
-    print("Start to run the settings update case.\n")
+        print("FW update case is finished.\n")
+        print("Start to run the settings update case.\n")
 
-    for case_name in update_settings_case_list:
-        if case_name in [7692, 7695]:
-            run_testcase_update_settings("7556", case_name, base_url, tmp)
-        elif case_name == 7556:
-            run_testcase_update_settings("7556p", case_name, base_url, tmp)
-        elif case_name == 6134:
-            run_testcase_update_settings("6134p", case_name, base_url, tmp)
-        elif case_name == 7555 or case_name == 16990:
-            run_testcase_update_settings("7555p", case_name, base_url, tmp)
-        else:
-            run_testcase_update_settings("7551p", case_name, base_url, tmp)
+        for case_name in update_settings_case_list:
+            if case_name in [7692, 7695]:
+                run_testcase_update_settings("7556", case_name, base_url, server_address)
+            elif case_name == 7556:
+                run_testcase_update_settings("7556p", case_name, base_url, server_address)
+            elif case_name == 6134:
+                run_testcase_update_settings("6134p", case_name, base_url, server_address)
+            elif case_name == 7555 or case_name == 16990:
+                run_testcase_update_settings("7555p", case_name, base_url, server_address)
+            else:
+                run_testcase_update_settings("7551p", case_name, base_url, server_address)
+
+    else:
+        update_fw_case_list = [16990, 16991, 16992, 17950, 17951]
+        update_settings_case_list = [6134, 7692, 7695, 7551, 7555, 7556]
+
+        for case_name in update_fw_case_list:
+            if case_name == 16992:
+                run_testcase_interrupt_fw_file("16990p", case_name, base_url, server_address)
+            elif case_name in [16990, 16991]:
+                run_testcase_interrupt_jx_package("16990p", case_name, base_url, server_address)
+            elif case_name == 17950:
+                run_testcase_update_fw_file("16990p", case_name, base_url, server_address)
+            else:
+                run_testcase_update_jx_package("16990p", case_name, base_url, server_address)
+
+        print("FW update case is finished.\n")
+        print("Start to run the settings update case.\n")
+
+        for case_name in update_settings_case_list:
+            if case_name in [7692, 7695]:
+                run_testcase_update_settings("7556", case_name, base_url, server_address)
+            elif case_name == 7556:
+                run_testcase_update_settings("7556p", case_name, base_url, server_address)
+            elif case_name == 6134:
+                run_testcase_update_settings("6134p", case_name, base_url, server_address)
+            elif case_name == 7555 or case_name == 16990:
+                run_testcase_update_settings("7555p", case_name, base_url, server_address)
+            else:
+                run_testcase_update_settings("7551p", case_name, base_url, server_address)
 
     rename_log_file(device_name)
 

@@ -13,7 +13,7 @@ def send_email():
     sender_email = "jdu_test_result@163.com"
     receiver_email = "anlin@jabra.com"
     #反正我写啥名你都会改 就随便写一个了
-    subject = "test result of JDU"
+    subject = "Linux JDU test result of"
     message = "log is in the sttachment"
 
     # 创建邮件对象

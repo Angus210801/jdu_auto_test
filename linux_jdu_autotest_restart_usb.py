@@ -11,7 +11,7 @@
 #
 #                   @Start Date   : 2023/04/24
 #
-#                   @Last Update  : 2021/05/19
+#                   @Last Update  : 2023/05/19
 #
 #This file is used to interrupt the update process of Jabra device by restarting the USB bus.
 #But after discuss with Younger, we decide to use the usb box to interrupt the update process.
@@ -58,6 +58,6 @@ with open(file_path, "a+") as f:
 bus_path = "/dev/bus/usb/" + result[0][1] + "/" + result[0][3][:3]
 usb_reset_cmd = 'sudo /usr/sbin/usbreset ' + bus_path
 sudo_command = 'echo {} | sudo -S {}'.format(password, usb_reset_cmd)
-# 执行重启USB控制器的命令
+# Run the restart the jfwu command
 os.popen(sudo_command)
 
