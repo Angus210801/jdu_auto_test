@@ -16,7 +16,7 @@ def send_email(device_name):
     subject = "Linux JDU test result of" + device_name
     message = "The log of" + device_name + "is in the attachment"
 
-    # 创建邮件对象
+    # Create a multipart message and set headers
     msg = MIMEMultipart()
     msg["From"] = sender_email
     msg["To"] = ','.join(receiver_email)

@@ -22,6 +22,14 @@ from urllib.parse import urljoin
 from linux_jdu_autotest_usb_box_new import *
 import time
 
+def check_network(server_address):
+    # Check the network connection
+    try:
+        subprocess.run(["ping", "-c", "1", server_address], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
 def delete_xpress_file():
     try:
         dir_path = '/var/run/jabra/'
