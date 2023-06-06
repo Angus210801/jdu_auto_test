@@ -99,11 +99,14 @@ def run_testcase_interrupt_jx_package(prepare_case, case_name, base_url, tmp):
         5. Connect the usb box again.
         6. Run the test case jx package again.
     """
+    case_name= str(case_name)
     test_case_dict = {
         '16990': 'Disconnect the DUT during the FW update.[Use JX Package][Allow downgrade]',
         '16991': 'Disconnect the DUT during the FW udpate.[Use JX Package][Not allow downgrade]',
         '16992': 'Disconnect the DUT during the FW update,for all individual components.[Use FW File]',
     }
+
+
     test_case_name = test_case_dict[case_name]
 
     with open(log_path, "a") as f:
@@ -393,10 +396,6 @@ if __name__ == '__main__':
 
     # Before test, should try to if access the network server_address.
     # If it can not access the network, should exit the test.
-    if not check_network(server_address):
-        print("Can not access the network, please check the network.")
-        exit()
-
     if device_name == 'panacast20':
         # Panacast20 update is very fast, so we don't need to run the interrupt update case.
         update_fw_case_list = [17950, 17951]
