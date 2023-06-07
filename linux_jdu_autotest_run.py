@@ -46,6 +46,9 @@ def run_testcase_update_settings(prepare_case_id, case_id, server_address, tmp):
         '7555': 'JX-ThinC:Install a ZIP file on end user environment with a later FW and no setting change.',
         '7556': 'JX-ThinC:Install a ZIP file on end user environment with a later FW and set all settings set to default.'
     }
+
+    case_id=str(case_id)
+
     if case_id not in test_case_dict.keys():
         print('The test case id is not in the test case dict.')
         sys.exit(1)
@@ -176,8 +179,9 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name, base_url, tmp):
         6. DisConnect the usb box and re-conncet.
         7. Run the jfwu command again.
     """
+    testcase_name= "16992 JXDU:Disconnect the DUT during the FW update,for all individual components.[Use FW File]"
     with open(log_path, "a") as f:
-        print('Start to run the test case: {}'.format(case_name))
+        print('Start to run the test case: {}'.format(case_name)+testcase_name)
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"case {case_name} start to run:\n")
         f.write(f"Timestamp: {timestamp}\n")
@@ -278,6 +282,8 @@ def run_testcase_interrupt_fw_file(prepare_case, case_name, base_url, tmp):
 
 
 def run_testcase_update_jx_package(prepare_case, case_name, base_url, tmp):
+    testcase_name = "17951 JXDU:Normal FW Update without Interruption.[Use JX Package](Linux JXDU 6.x or Above)"
+    print('Start to run the test case: {}'.format(case_name) + testcase_name)
     with open(log_path, "a") as f:
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"Timestamp: {timestamp}\n")
@@ -307,6 +313,8 @@ def run_testcase_update_jx_package(prepare_case, case_name, base_url, tmp):
 
 
 def run_testcase_update_fw_file(prepare_case, case_id, base_url, tmp):
+    testcase_name = "17950 JXDU:Normal FW update without Interruption.[Use FW File](Linux JXDU 6.x or above)"
+    print('Start to run the test case: {}'.format(case_name) + testcase_name)
     with open(log_path, "a") as f:
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"Timestamp: {timestamp}\n")
