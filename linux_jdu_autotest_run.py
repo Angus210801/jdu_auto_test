@@ -128,6 +128,8 @@ def run_testcase_interrupt_jx_package(prepare_case_id, case_id, server_address, 
         else:
             subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
 
+        time.sleep(10)
+
         f.write(f"The prepare case is finished.\n")
         f.flush()
         # Start to run the test case
