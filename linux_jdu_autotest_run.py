@@ -59,6 +59,9 @@ def run_testcase_update_settings(prepare_case_id, case_id, server_address, tmp):
         f.flush()
 
         subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
+        time.sleep(10)
+
+
         # 2. Compare the settings before and after the prepare case
         f.write(f"Now, check the device settings is in prepare status: \n")
         setting_compare(f)
@@ -77,6 +80,7 @@ def run_testcase_update_settings(prepare_case_id, case_id, server_address, tmp):
         f.write("------------------------------------------------------------\n\n\n\n")
         f.flush()
         print('Test case {} is finished.'.format(case_id))
+        time.sleep(10)
 
 
 def run_testcase_interrupt_jx_package(prepare_case_id, case_id, server_address, tmp):
@@ -322,6 +326,8 @@ def run_testcase_update_jx_package(prepare_case_id, case_id, server_address, tmp
         else:
             subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
 
+        time.sleep(10)
+
         f.write(f"\nstep2:case {case_id} prepare done, start to run case {case_id}:\n")
         f.flush()
         subprocess.Popen(['./jdu.sh', test_case_utl], stdout=f).wait()
@@ -330,7 +336,7 @@ def run_testcase_update_jx_package(prepare_case_id, case_id, server_address, tmp
         # Print the dividing line to the log file
         f.write("------------------------------------------------------------\n\n\n\n")
         print('Test case {} is finished.'.format(case_id))
-
+        time.sleep(10)
 
 def run_testcase_update_fw_file(prepare_case_id, case_id, server_address, tmp):
     testcase_name = "17950 JXDU:Normal FW update without Interruption.[Use FW File](Linux JXDU 6.x or above)"
@@ -374,6 +380,8 @@ def run_testcase_update_fw_file(prepare_case_id, case_id, server_address, tmp):
             subprocess.Popen(['./jfwu', '/tmp/lowerfw.zip'], stdout=f).wait()
         else:
             subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
+
+        time.sleep(10)
 
         f.write(f"The prepare case is run finished\n")
         f.flush()
@@ -419,6 +427,8 @@ def run_testcase_update_fw_file(prepare_case_id, case_id, server_address, tmp):
         # Print the dividing line to the log file
         f.write("------------------------------------------------------------\n\n\n\n")
         print('Test case {} is finished.'.format(case_id))
+
+        time.sleep(10)
 
 
 if __name__ == '__main__':
