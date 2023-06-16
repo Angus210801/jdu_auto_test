@@ -17,6 +17,8 @@
 """
 import datetime
 import sys
+import time
+
 from linux_jdu_autotest_sendlog_email import *
 
 def run_testcase_update_settings(prepare_case_id, case_id, server_address, tmp):
@@ -152,6 +154,7 @@ def run_testcase_interrupt_jx_package(prepare_case_id, case_id, server_address, 
         f.write("------------------------------------------------------------\n\n\n\n")
         f.flush()
         print('Test case {} is finished.'.format(case_id))
+        time.sleep(10)
 
 
 def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp):
