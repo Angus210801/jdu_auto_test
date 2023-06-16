@@ -144,5 +144,5 @@ def create_log_file(file_path):
 
 def rename_log_file(new_file_name):
     old_file_path = "/tmp/auto_log/log"
-    new_file_path = f"/tmp/auto_log/{new_file_name}_log"
+    new_file_path = f"/tmp/auto_log/{new_file_name}_log.txt"
     os.rename(old_file_path, new_file_path)
