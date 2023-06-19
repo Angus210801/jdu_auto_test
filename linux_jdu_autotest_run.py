@@ -59,7 +59,7 @@ def run_testcase_update_settings(prepare_case_id, case_id, server_address, tmp):
         f.flush()
 
         subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
-        time.sleep(10)
+        time.sleep(80)
 
 
         # 2. Compare the settings before and after the prepare case
@@ -80,7 +80,7 @@ def run_testcase_update_settings(prepare_case_id, case_id, server_address, tmp):
         f.write("------------------------------------------------------------\n\n\n\n")
         f.flush()
         print('Test case {} is finished.'.format(case_id))
-        time.sleep(10)
+        time.sleep(80)
 
 
 def run_testcase_interrupt_jx_package(prepare_case_id, case_id, server_address, tmp):
@@ -132,7 +132,8 @@ def run_testcase_interrupt_jx_package(prepare_case_id, case_id, server_address, 
         else:
             subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
 
-        time.sleep(10)
+        time.sleep(80)
+
 
         f.write(f"The prepare case is finished.\n")
         f.flush()
@@ -160,7 +161,7 @@ def run_testcase_interrupt_jx_package(prepare_case_id, case_id, server_address, 
         f.write("------------------------------------------------------------\n\n\n\n")
         f.flush()
         print('Test case {} is finished.'.format(case_id))
-        time.sleep(10)
+        time.sleep(80)
 
 
 def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp):
@@ -250,7 +251,7 @@ def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp
         f.write(
             f'This firmware update failed is because of the interrupt jdu update,we just want to download the fw package from server.\n')
 
-        time.sleep(2)
+        time.sleep(8)
 
         subprocess.Popen(['7z', 'x', '/var/run/jabra/xpress_package_*.zip', '-pgn123!', '-o/tmp/fw/']).wait()
         f.write(f'Unzip the xpress package completed!\n')
@@ -293,6 +294,7 @@ def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp
         f.write("------------------------------------------------------------\n\n\n\n")
         f.flush()
         print('Test case {} is finished.'.format(case_id))
+        time.sleep(80)
 
 
 def run_testcase_update_jx_package(prepare_case_id, case_id, server_address, tmp):
@@ -326,7 +328,7 @@ def run_testcase_update_jx_package(prepare_case_id, case_id, server_address, tmp
         else:
             subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
 
-        time.sleep(10)
+        time.sleep(80)
 
         f.write(f"\nstep2:case {case_id} prepare done, start to run case {case_id}:\n")
         f.flush()
@@ -336,7 +338,7 @@ def run_testcase_update_jx_package(prepare_case_id, case_id, server_address, tmp
         # Print the dividing line to the log file
         f.write("------------------------------------------------------------\n\n\n\n")
         print('Test case {} is finished.'.format(case_id))
-        time.sleep(10)
+        time.sleep(80)
 
 def run_testcase_update_fw_file(prepare_case_id, case_id, server_address, tmp):
     testcase_name = "17950 JXDU:Normal FW update without Interruption.[Use FW File](Linux JXDU 6.x or above)"
@@ -381,7 +383,7 @@ def run_testcase_update_fw_file(prepare_case_id, case_id, server_address, tmp):
         else:
             subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
 
-        time.sleep(10)
+        time.sleep(80)
 
         f.write(f"The prepare case is run finished\n")
         f.flush()
@@ -428,7 +430,7 @@ def run_testcase_update_fw_file(prepare_case_id, case_id, server_address, tmp):
         f.write("------------------------------------------------------------\n\n\n\n")
         print('Test case {} is finished.'.format(case_id))
 
-        time.sleep(10)
+        time.sleep(80)
 
 
 if __name__ == '__main__':
@@ -457,7 +459,7 @@ if __name__ == '__main__':
 
 
     for case_name in update_fw_case_list:
-        if device_name in ['speak240', 'speak275', 'speak255', 'evolve250', 'evolve255', 'evolve265flex']:
+        if device_name in ['speak240', 'speak275', 'speak255', 'evolve250stereo', 'evolve250mono','evolve255stereo', 'evolve255mono','evolve265flex']:
             prepare_case = "lowerfw.zip"
         else:
             prepare_case = "16990p"
