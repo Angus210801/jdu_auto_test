@@ -26,7 +26,7 @@ def send_email(device_name):
     msg.attach(MIMEText(message, "plain"))
 
     # Add attachment
-    filename = "/tmp/auto_log/"+ device_name +"_log"  # 附件文件路径
+    filename = "/tmp/auto_log/"+ device_name +"_log.txt"  # 附件文件路径
     attachment = open(filename, "rb")
 
     part = MIMEBase("application", "octet-stream")
@@ -64,7 +64,8 @@ def recover_network():
     os.popen(open_wired)
 
 if __name__ == '__main__':
-    device_name='speak2'
+    # Ask what device to test
+    device_name=input("Please input the device name:")
     switch_network()
     sleep(15)
     send_email(device_name)

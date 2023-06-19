@@ -444,6 +444,11 @@ if __name__ == '__main__':
     device_name = input("Which device are you test:")
     current_test_rc = current_test_rc + device_name + "/"
 
+    with open(log_path, "a") as f:
+        command = "lsb_release -a"
+        subprocess.run(command, shell=True)
+        command = "dpkg -l jdu"
+        subprocess.run(command, shell=True)
 
     # Before test, should try to if access the network server_address.
     # If it can not access the network, should exit the test.
