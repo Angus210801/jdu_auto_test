@@ -27,9 +27,9 @@ def get_os_version():
 
     # Use commad to get the system version information
     result = subprocess.check_output(['sudo','cat','/etc/issue'])
-    output = result.stdout.decode('utf-8')
+    # output = result.stdout.decode('utf-8')
     #提取output中的数字，删除其他字符
-    output = ''.join([x for x in output if x.isdigit()])
+    output = ''.join([x for x in result if x.isdigit()])
     return output
 
 def check_network(server_address):
