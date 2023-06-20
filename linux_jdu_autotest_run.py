@@ -446,7 +446,10 @@ if __name__ == '__main__':
     current_test_rc = current_test_rc + device_name + "/"
 
     with open(log_path, "a") as f:
-        subprocess.run(['cat', '/etc/issue'], stdout=f)
+        os_version=get_os_version()
+        # subprocess.run(['cat', '/etc/issue'], stdout=f)
+        f.write(f"OS version is {os_version}\n")
+        f.flush()
         subprocess.run(['dpkg', '-l','jdu'], stdout=f)
 
     # Before test, should try to if access the network server_address.
