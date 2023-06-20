@@ -26,11 +26,12 @@ def get_os_version():
     import subprocess
 
     # Use commad to get the system version information
-    result = subprocess.check_output(['sudo','cat','/etc/issue'])
-    # output = result.stdout.decode('utf-8')
-    #提取output中的数字，删除其他字符
-    output = ''.join([x for x in result if x.isdigit()])
-    return output
+    command = "lsb_release -a"
+    result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    result = result.stdout.decode("utf-8")
+    result = result.split("\n")
+    os_version = result[1].split(":")[1].strip()
+    return os_version
 
 def check_network(server_address):
     # Check the network connection
