@@ -126,7 +126,7 @@ def run_testcase_update_settings_for_new_device(prepare_case_id, case_id, server
         f.write(f"{lowerfw_url}\n")
         f.flush()
         subprocess.Popen(['wget', '-P', '/tmp/', lowerfw_url], stdout=f).wait()
-        subprocess.Popen(['./jfwu', '/tmp/lowerfw.zip'], stdout=f).wait()
+        subprocess.run(['./jfwu', '/tmp/lowerfw.zip'], stdout=f)
         f.write(f"Device update to the lowfw.\n")
         f.flush()
         time.sleep(80)
@@ -199,7 +199,8 @@ def run_testcase_interrupt_jx_package(prepare_case_id, case_id, server_address, 
 
             subprocess.Popen(['wget', '-P', '/tmp/', prepare_case_url], stdout=f).wait()
             # Use ./jfwu + lowerfw.zip to update the device
-            subprocess.Popen(['./jfwu', '/tmp/lowerfw.zip'], stdout=f).wait()
+            time.sleep(10)
+            subprocess.run(['./jfwu', '/tmp/lowerfw.zip'], stdout=f)
         else:
             subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
 
@@ -290,7 +291,7 @@ def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp
            
             subprocess.Popen(['wget', '-P', '/tmp/', prepare_case_url], stdout=f).wait()
             # Use ./jfwu + lowerfw.zip to update the device
-            subprocess.Popen(['./jfwu', '/tmp/lowerfw.zip'], stdout=f).wait()
+            subprocess.run(['./jfwu', '/tmp/lowerfw.zip'], stdout=f)
 
         else:
              subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
@@ -395,7 +396,7 @@ def run_testcase_update_jx_package(prepare_case_id, case_id, server_address, tmp
 
             subprocess.Popen(['wget', '-P', '/tmp/', prepare_case_url], stdout=f).wait()
             # Use ./jfwu + lowerfw.zip to update the device
-            subprocess.Popen(['./jfwu', '/tmp/lowerfw.zip'], stdout=f).wait()
+            subprocess.run(['./jfwu', '/tmp/lowerfw.zip'], stdout=f)
         else:
             subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
 
@@ -450,7 +451,7 @@ def run_testcase_update_fw_file(prepare_case_id, case_id, server_address, tmp):
 
             subprocess.Popen(['wget', '-P', '/tmp/', prepare_case_url], stdout=f).wait()
             # Use ./jfwu + lowerfw.zip to update the device
-            subprocess.Popen(['./jfwu', '/tmp/lowerfw.zip'], stdout=f).wait()
+            subprocess.run(['./jfwu', '/tmp/lowerfw.zip'], stdout=f)
         else:
             subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
 
