@@ -26,17 +26,14 @@ def get_os_version():
     import subprocess
 
     # 使用subprocess模块执行lsb_release命令获取系统版本
-    result = subprocess.run(['sudo','lsb_release', '-a'], stdout=subprocess.PIPE)
+    result = subprocess.run(['sudo','cat','/etc/issue'], stdout=subprocess.PIPE)
 
     # 将输出转换为字符串
     output = result.stdout.decode('utf-8')
 
     # 在输出中查找Description行并提取系统版本信息
-    for line in output.split('\n'):
-        if 'Description' in line:
-            version = line.split(':')[1].strip()
 
-    return version
+    return output
 def check_network(server_address):
     # Check the network connection
     try:
