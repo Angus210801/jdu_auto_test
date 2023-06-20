@@ -529,7 +529,7 @@ if __name__ == '__main__':
     else:
         update_fw_case_list = [16990, 16991, 16992, 17950, 17951]
 
-    update_settings_case_list = [6134, 7692, 7695, 7551, 7555, 7556]
+    update_settings_case_list = [7551,7695,7692,6134,7555,7556]
 
     # Add a new judgement to check if the device is new device list.
 

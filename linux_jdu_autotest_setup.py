@@ -26,7 +26,7 @@ def get_os_version():
     import subprocess
 
     # Use commad to get the system version information
-    result = subprocess.run(['sudo','cat','/etc/issue'], stdout=subprocess.PIPE)
+    result = subprocess.check_output(['sudo','cat','/etc/issue'])
     output = result.stdout.decode('utf-8')
     #提取output中的数字，删除其他字符
     output = ''.join([x for x in output if x.isdigit()])
