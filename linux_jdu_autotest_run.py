@@ -122,12 +122,13 @@ def run_testcase_update_settings_for_new_device(prepare_case_id, case_id, server
         if os.path.exists('/tmp/lowerfw.zip'):
             subprocess.Popen(['rm', '-rf', '/tmp/lowerfw.zip'])
         lowerfw='lowerfw.zip'
-
         lowerfw_url = server_address + tmp + lowerfw
-        print(lowerfw_url)
+        f.write(f"{lowerfw_url}\n")
+        f.flush()
         subprocess.Popen(['wget', '-P', '/tmp/', lowerfw_url], stdout=f).wait()
         subprocess.Popen(['./jfwu', '/tmp/lowerfw.zip'], stdout=f).wait()
-
+        f.write(f"Device update to the lowfw.\n")
+        f.flush()
         time.sleep(80)
 
         subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
@@ -536,23 +537,24 @@ if __name__ == '__main__':
     # A list contains new device name.
     new_device_list = ['speak240', 'speak275', 'speak255', 'evolve250stereo', 'evolve250mono','evolve255stereo', 'evolve255mono','evolve265flex']
 
-    # for case_name in update_fw_case_list:
-    #     if device_name in new_device_list:
-    #         prepare_case = "lowerfw.zip"
-    #     else:
-    #         prepare_case = "16990p"
-    #
-    #     if case_name == 16992:
-    #         run_testcase_interrupt_fw_file(prepare_case, case_name, server_address, current_test_rc)
-    #     elif case_name in [16990, 16991]:
-    #         run_testcase_interrupt_jx_package(prepare_case, case_name, server_address, current_test_rc)
-    #     elif case_name == 17950:
-    #         run_testcase_update_fw_file(prepare_case, case_name, server_address, current_test_rc)
-    #     else:
-    #         run_testcase_update_jx_package(prepare_case, case_name, server_address, current_test_rc)
-    #
-    # print("FW update case is finished.\n")
-    # print("Start to run the settings update case.\n")
+    for case_name in update_fw_case_list:
+        if device_name in new_device_list:
+            prepare_case = "lowerfw.zip"
+        else:
+            prepare_case = "16990p"
+
+        if case_name == 16992:
+            run_testcase_interrupt_fw_file(prepare_case, case_name, server_address, current_test_rc)
+        elif case_name in [16990, 16991]:
+            run_testcase_interrupt_jx_package(prepare_case, case_name, server_address, current_test_rc)
+        elif case_name == 17950:
+            run_testcase_update_fw_file(prepare_case, case_name, server_address, current_test_rc)
+        else:
+            run_testcase_update_jx_package(prepare_case, case_name, server_address, current_test_rc)
+
+    print("FW update case is finished.\n")
+    print("Start to run the settings update case.\n")
+
     for case_name in update_settings_case_list:
         if case_name == 7692 or case_name == 7695:
             run_testcase_update_settings("7556", case_name, server_address, current_test_rc)
