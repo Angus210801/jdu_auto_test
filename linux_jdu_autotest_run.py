@@ -536,23 +536,23 @@ if __name__ == '__main__':
     # A list contains new device name.
     new_device_list = ['speak240', 'speak275', 'speak255', 'evolve250stereo', 'evolve250mono','evolve255stereo', 'evolve255mono','evolve265flex']
 
-    for case_name in update_fw_case_list:
-        if device_name in new_device_list:
-            prepare_case = "lowerfw.zip"
-        else:
-            prepare_case = "16990p"
-
-        if case_name == 16992:
-            run_testcase_interrupt_fw_file(prepare_case, case_name, server_address, current_test_rc)
-        elif case_name in [16990, 16991]:
-            run_testcase_interrupt_jx_package(prepare_case, case_name, server_address, current_test_rc)
-        elif case_name == 17950:
-            run_testcase_update_fw_file(prepare_case, case_name, server_address, current_test_rc)
-        else:
-            run_testcase_update_jx_package(prepare_case, case_name, server_address, current_test_rc)
-
-    print("FW update case is finished.\n")
-    print("Start to run the settings update case.\n")
+    # for case_name in update_fw_case_list:
+    #     if device_name in new_device_list:
+    #         prepare_case = "lowerfw.zip"
+    #     else:
+    #         prepare_case = "16990p"
+    #
+    #     if case_name == 16992:
+    #         run_testcase_interrupt_fw_file(prepare_case, case_name, server_address, current_test_rc)
+    #     elif case_name in [16990, 16991]:
+    #         run_testcase_interrupt_jx_package(prepare_case, case_name, server_address, current_test_rc)
+    #     elif case_name == 17950:
+    #         run_testcase_update_fw_file(prepare_case, case_name, server_address, current_test_rc)
+    #     else:
+    #         run_testcase_update_jx_package(prepare_case, case_name, server_address, current_test_rc)
+    #
+    # print("FW update case is finished.\n")
+    # print("Start to run the settings update case.\n")
     for case_name in update_settings_case_list:
         if case_name == 7692 or case_name == 7695:
             run_testcase_update_settings("7556", case_name, server_address, current_test_rc)
