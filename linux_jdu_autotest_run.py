@@ -53,6 +53,7 @@ def run_testcase_update_settings(prepare_case_id, case_id, server_address, tmp):
         f.write(f"step1:Run the prepare package{prepare_case_id} for the {case_id}\n")
         f.flush()
 
+
         prepare_case_url = get_xpress_url(prepare_case_id, case_id, server_address, tmp)[0]
         test_case_url = get_xpress_url(prepare_case_id, case_id, server_address, tmp)[1]
         f.write(f"{prepare_case_url}\n")
@@ -83,7 +84,75 @@ def run_testcase_update_settings(prepare_case_id, case_id, server_address, tmp):
         print('Test case {} is finished.'.format(case_id))
         time.sleep(80)
 
+def run_testcase_update_settings_for_new_device(prepare_case_id, case_id, server_address, tmp):
+    # Create a dict to store the test case name.
+    # The key is the test case id, and the value is the test case name.
+    test_case_dict = {
+        '7551': 'JX-ThinC:Install a ZIP file on end user environment with a later FW and set all settings are changed.',
+        '7555': 'JX-ThinC:Install a ZIP file on end user environment with a later FW and no setting change.',
+        '7556': 'JX-ThinC:Install a ZIP file on end user environment with a later FW and set all settings set to default.'
+    }
 
+    case_id=str(case_id)
+
+    if case_id not in test_case_dict.keys():
+        print('The test case id is not in the test case dict.')
+        sys.exit(1)
+    else:
+        test_case_name = test_case_dict[case_id]
+
+    with open(log_path, "a") as f:
+        # Output the information to the terminal window
+        print('Start to run the test case: {}'.format(case_id) + "--" + test_case_name)
+
+
+        f.write(f"Case {case_id}: {test_case_name}start to run:\n")
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        f.write(f"Timestamp: {timestamp}\n")
+        # 1. Run the prepared case first
+        f.write(f"step1:Run the prepare package{prepare_case_id} for the {case_id}\n")
+        f.flush()
+
+        prepare_case_url = get_xpress_url(prepare_case_id, case_id, server_address, tmp)[0]
+        test_case_url = get_xpress_url(prepare_case_id, case_id, server_address, tmp)[1]
+        f.write(f"{prepare_case_url}\n")
+        f.write(f"{test_case_url}\n")
+        f.flush()
+
+        if os.path.exists('/tmp/lowerfw.zip'):
+            subprocess.Popen(['rm', '-rf', '/tmp/lowerfw.zip'])
+        lowerfw='lowerfw.zip'
+
+        lowerfw_url = server_address + tmp + lowerfw
+        print(lowerfw_url)
+        subprocess.Popen(['wget', '-P', '/tmp/', lowerfw_url], stdout=f).wait()
+        subprocess.Popen(['./jfwu', '/tmp/lowerfw.zip'], stdout=f).wait()
+
+        time.sleep(80)
+
+        subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
+        time.sleep(80)
+
+
+        # 2. Compare the settings before and after the prepare case
+        f.write(f"Now, check the device settings is in prepare status: \n")
+        setting_compare(f)
+        # 3. Run the test case
+        f.write(f"\nstep2:case {case_id} prepare done, start to run case {case_id}:\n")
+        f.flush()
+        subprocess.Popen(['./jdu.sh', test_case_url], stdout=f).wait()
+        # 4. Compare the settings after the test case
+        f.write(f"\nstep3:check if the settings changed correctly:\n")
+        f.flush()
+
+        setting_compare(f)
+
+        # 5. Print the test finish info and dividing line to the log file
+        f.write(f"{case_id} test is finished.")
+        f.write("------------------------------------------------------------\n\n\n\n")
+        f.flush()
+        print('Test case {} is finished.'.format(case_id))
+        time.sleep(80)
 def run_testcase_interrupt_jx_package(prepare_case_id, case_id, server_address, tmp):
     """ This test case process is:
         1. Download the lower fw package from the server.
@@ -464,9 +533,11 @@ if __name__ == '__main__':
 
     # Add a new judgement to check if the device is new device list.
 
+    # A list contains new device name.
+    new_device_list = ['speak240', 'speak275', 'speak255', 'evolve250stereo', 'evolve250mono','evolve255stereo', 'evolve255mono','evolve265flex']
 
     for case_name in update_fw_case_list:
-        if device_name in ['speak240', 'speak275', 'speak255', 'evolve250stereo', 'evolve250mono','evolve255stereo', 'evolve255mono','evolve265flex']:
+        if device_name in new_device_list:
             prepare_case = "lowerfw.zip"
         else:
             prepare_case = "16990p"
@@ -482,18 +553,26 @@ if __name__ == '__main__':
 
     print("FW update case is finished.\n")
     print("Start to run the settings update case.\n")
-
     for case_name in update_settings_case_list:
-        if case_name in [7692, 7695]:
+        if case_name == 7692 or case_name == 7695:
             run_testcase_update_settings("7556", case_name, server_address, current_test_rc)
         elif case_name == 7556:
-            run_testcase_update_settings("7556p", case_name, server_address, current_test_rc)
+            if device_name in new_device_list:
+                run_testcase_update_settings_for_new_device("7556p", case_name, server_address, current_test_rc)
+            else:
+                run_testcase_update_settings("7556p", case_name, server_address, current_test_rc)
         elif case_name == 6134:
             run_testcase_update_settings("6134p", case_name, server_address, current_test_rc)
-        elif case_name == 7555 or case_name == 16990:
-            run_testcase_update_settings("7555p", case_name, server_address, current_test_rc)
+        elif case_name == 7555:
+            if device_name in new_device_list:
+                run_testcase_update_settings_for_new_device("7555p", case_name, server_address, current_test_rc)
+            else:
+                run_testcase_update_settings("7555p", case_name, server_address, current_test_rc)
         else:
-            run_testcase_update_settings("7551p", case_name, server_address, current_test_rc)
+            if device_name in new_device_list:
+                run_testcase_update_settings_for_new_device("7551p", case_name, server_address, current_test_rc)
+            else:
+                run_testcase_update_settings("7551p", case_name, server_address, current_test_rc)
 
     rename_log_file(device_name)
 
