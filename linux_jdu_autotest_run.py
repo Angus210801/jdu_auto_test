@@ -502,7 +502,7 @@ if __name__ == '__main__':
 
     switch_network()
     sleep(15)
-    send_email(device_name)
+    send_email(device_name,os_version)
     sleep(15)
     recover_network()
 

@@ -9,7 +9,7 @@ from time import sleep
 from linux_jdu_autotest_run import *
 from linux_jdu_autotest_setup import *
 
-def send_email(device_name):
+def send_email(device_name,os_version):
     sender_email = "jdu_test_result@163.com"
     #add two revicer:extawei
     receiver_email = ["anlin@jabra.com","extawei@jabra.com"]
@@ -32,7 +32,7 @@ def send_email(device_name):
     part = MIMEBase("application", "octet-stream")
     part.set_payload(attachment.read())
     encoders.encode_base64(part)
-    part.add_header("Content-Disposition", f"attachment; filename= {device_name}.txt")
+    part.add_header("Content-Disposition", f"attachment; filename= {device_name}+{os_version}.txt")
     msg.attach(part)
 
     # setup SMTP service
