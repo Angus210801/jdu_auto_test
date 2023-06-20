@@ -23,15 +23,8 @@ from linux_jdu_autotest_usb_box_new import *
 import time
 
 def get_os_version():
-    import subprocess
-
-    # Use commad to get the system version information
-    command = "lsb_release -a"
-    result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    result = result.stdout.decode("utf-8")
-    result = result.split("\n")
-    os_version = result[1].split(":")[1].strip()
-    return os_version
+    version = os.popen('lsb_release -r').read().split()[1]
+    return version
 
 def check_network(server_address):
     # Check the network connection
