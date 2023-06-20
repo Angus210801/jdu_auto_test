@@ -26,7 +26,7 @@ def get_os_version():
     import subprocess
 
     # 使用subprocess模块执行lsb_release命令获取系统版本
-    result = subprocess.run(['lsb_release', '-a'], stdout=subprocess.PIPE)
+    result = subprocess.run(['sudo','lsb_release', '-a'], stdout=subprocess.PIPE)
 
     # 将输出转换为字符串
     output = result.stdout.decode('utf-8')
