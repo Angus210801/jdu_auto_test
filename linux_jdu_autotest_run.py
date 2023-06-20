@@ -310,25 +310,28 @@ def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp
         process = subprocess.Popen(['./jdu.sh', test_case_utl], stdout=f)
         # Wait until the download is completed
         while not os.path.exists('/tmp/jdu_log/wget.log'):
-            time.sleep(1)
+            time.sleep(3)
         while "zip’ saved" not in open('/tmp/jdu_log/wget.log').read():
             time.sleep(3)
             f.write(f'{case_id} JX package download not completed!\n')
 
-        f.write(f'JX package downlaod completed!\n')
+        f.write(f'--JX package downlaod completed!\n')
+        f.write(f'--Start to interrupt the update process!\n')
+        f.flush()
 
         # when download completed, end the ./jdu.sh process
         process.terminate()
 
         f.write(
             f'This firmware update failed is because of the interrupt jdu update,we just want to download the fw package from server.\n')
+        f.flush()
 
-        time.sleep(8)
+        time.sleep(10)
 
         subprocess.Popen(['7z', 'x', '/var/run/jabra/xpress_package_*.zip', '-pgn123!', '-o/tmp/fw/']).wait()
         f.write(f'Unzip the xpress package completed!\n')
         f.flush()
-        time.sleep(2)
+        time.sleep(10)
 
         os.chdir('/usr/local/gn')
         command = "/usr/local/gn/jfwu /tmp/fw/Firmware/J*"
