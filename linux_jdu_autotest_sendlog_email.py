@@ -32,7 +32,7 @@ def send_email(device_name):
     part = MIMEBase("application", "octet-stream")
     part.set_payload(attachment.read())
     encoders.encode_base64(part)
-    part.add_header("Content-Disposition", f"attachment; filename= {device_name}")
+    part.add_header("Content-Disposition", f"attachment; filename= {device_name}.txt")
     msg.attach(part)
 
     # setup SMTP service
@@ -49,6 +49,7 @@ def send_email(device_name):
         print("The e-mail had been sent successfully！")
     except smtplib.SMTPException as e:
         print("The e-mail had been sent failed！:", str(e))
+
 def switch_network():
     password = "test@123"
     shut_down_wired = 'echo {} | sudo -S {}'.format(password, "sudo nmcli connection down 'Wired connection 1'")
@@ -56,6 +57,7 @@ def switch_network():
     subprocess.run(['nmcli', 'radio', 'wifi', 'on'], stdout=subprocess.PIPE)
     Connect_WiFi = 'echo {} | sudo -S {}'.format(password,"sudo nmcli dev wifi connect GN-Hotspot password Denc@2022110")
     os.popen(Connect_WiFi)
+
 def recover_network():
     password = "test@123"
     disConnect_WiFi = 'echo {} | sudo -S {}'.format(password,"nmcli radio wifi off")
