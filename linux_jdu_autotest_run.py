@@ -446,7 +446,7 @@ if __name__ == '__main__':
     current_test_rc = current_test_rc + device_name + "/"
 
     with open(log_path, "a") as f:
-        subprocess.run(['lsb_release', '-a'], stdout=f)
+        subprocess.run(['cat', '/etc/issue'], stdout=f)
         subprocess.run(['dpkg', '-l','jdu'], stdout=f)
 
     # Before test, should try to if access the network server_address.
