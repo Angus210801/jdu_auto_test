@@ -74,7 +74,7 @@ def run_testcase_update_settings(prepare_case_id, case_id, server_address, tmp):
         # 4. Compare the settings after the test case
         f.write(f"\nstep3:check if the settings changed correctly:\n")
         f.flush()
-
+        time.sleep(10)
         setting_compare(f)
 
         # 5. Print the test finish info and dividing line to the log file
