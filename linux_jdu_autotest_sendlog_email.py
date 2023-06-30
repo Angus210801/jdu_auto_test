@@ -69,8 +69,9 @@ def recover_network():
 if __name__ == '__main__':
     # Ask what device to test
     device_name=input("Please input the device name:")
+    OS=input("Please input the OS version:")
     switch_network()
     sleep(15)
-    send_email(device_name)
+    send_email(device_name,OS)
     sleep(15)
     recover_network()
