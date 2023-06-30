@@ -14,7 +14,8 @@ def send_email(device_name,os_version):
     #add two revicer:extawei
     receiver_email = ["anlin@jabra.com","extawei@jabra.com"]
     subject = "Linux JDU test result of" + device_name
-    message = "The log of" + device_name + "is in the attachment"
+    message = "Hi , Auto test for " + device_name + " in "+ os_version+" is complete. The log file is in the attachment.Pls download and check the test result, thank you. " \
+                                                                       "Best Regards, " \
 
     # Create a multipart message and set headers
     msg = MIMEMultipart()
@@ -32,7 +33,7 @@ def send_email(device_name,os_version):
     part = MIMEBase("application", "octet-stream")
     part.set_payload(attachment.read())
     encoders.encode_base64(part)
-    part.add_header("Content-Disposition", f"attachment; filename= {device_name}+{os_version}.txt")
+    part.add_header("Content-Disposition", f"attachment; filename= {device_name}_in_{os_version}.txt")
     msg.attach(part)
 
     # setup SMTP service

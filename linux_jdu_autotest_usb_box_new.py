@@ -77,6 +77,16 @@ class UsbBoxDriver_windows:
             # Logger.ins().file_logger().error(traceback.format_exc())
         return rst
 
+try:
+    import serial
+except:
+    os.system("python -m pip install pyserial")
+    import serial
+
+open_channel1_str = "A0 01 01 A2"
+open_channel4_str = "A0 04 01 A5"
+close_channel1_str = "A0 01 00 A1"
+close_channel4_str = "A0 04 00 A4"
 
 
 class UsbBoxDriver_ubuntu:
