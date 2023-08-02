@@ -120,8 +120,6 @@ def run_testcase_update_settings_for_new_device(prepare_case_id, case_id, server
         f.write(f"{test_case_url}\n")
         f.flush()
 
-        if os.path.exists('/tmp/lowerfw.zip'):
-            subprocess.Popen(['rm', '-rf', '/tmp/lowerfw.zip'])
         lowerfw='lowerfw.zip'
         lowerfw_url = server_address + tmp + lowerfw
         f.write(f"{lowerfw_url}\n")
@@ -518,10 +516,10 @@ if __name__ == '__main__':
         update_fw_case_list = [17950, 17951]
     else:
         update_fw_case_list = [16990, 16991, 16992, 17950, 17951]
-        update_fw_case_list = [16992,17950]
+        # update_fw_case_list = [16992,17950]
 
-    # update_settings_case_list = [7551,7695,7692,6134,7555,7556]
-    update_settings_case_list = []
+    update_settings_case_list = [7551,7695,7692,6134,7555,7556]
+    # update_settings_case_list = []
 
 
     for case_name in update_fw_case_list:
