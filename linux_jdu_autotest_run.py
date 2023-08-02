@@ -16,6 +16,7 @@
 #-------------------------------------------------------------------
 """
 import datetime
+import os
 import subprocess
 import sys
 import time
@@ -238,15 +239,6 @@ def run_testcase_interrupt_jx_package(prepare_case_id, case_id, server_address, 
 
 def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp):
 
-    """ This test case process is:
-        1. Download the lower fw package from the server.
-        2. Run the lower fw package.
-        3. Download the higher fw JX package from the server.
-        4. Unzip the JX package and get the fw file.
-        5. Use the jfwu update the device.
-        6. DisConnect the usb box and re-conncet.
-        7. Run the jfwu command again.
-    """
 
     testcase_name= "16992 JXDU:Disconnect the DUT during the FW update,for all individual components.[Use FW File]"
 
@@ -282,16 +274,17 @@ def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp
 
         os.chdir('/usr/local/gn')
 
-        # Judgement the package is lowerfw.zip or xpress package
-        # Use wget to download the lowerfw.zip to the /tmp/
         if prepare_case_url.endswith('lowerfw.zip'):
             # judge the lowerfw.zip is exist or not,if existed,delete it.
             if os.path.exists('/tmp/lowerfw.zip'):
                 subprocess.Popen(['rm', '-rf', '/tmp/lowerfw.zip'])
+            if os.path.exists('/tmp/fw/higerfw.zip'):
+                subprocess.Popen(['rm', '-rf', '/tmp/fw/higerfw.zip'])
            
             subprocess.Popen(['wget', '-P', '/tmp/', prepare_case_url], stdout=f).wait()
             # Use ./jfwu + lowerfw.zip to update the device
             subprocess.run(['./jfwu', '/tmp/lowerfw.zip'], stdout=f)
+            print("The lowerfw.zip is updated successfully.")
 
         else:
              subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
@@ -313,13 +306,7 @@ def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp
         #     time.sleep(3)
         # while "zip’ saved" not in open('/tmp/jdu_log/wget.log').read():
         #     time.sleep(3)
-        #     f.write(f'{case_id} JX package download not completed!\n')
-
-        f.write(f'--JX package downlaod completed!\n')
-        f.write(f'--Start to interrupt the update process!\n')
-        f.flush()
-
-
+        #     f.write(f'{case_id} JX package download not completed!\n'
 
         # when download completed, end the ./jdu.sh process
         # process.terminate()
@@ -360,8 +347,6 @@ def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp
         time.sleep(5)
 
         command = "/usr/local/gn/jfwu /tmp/fw/Firmware/J*"
-        subprocess.run(command, shell=True)
-        command = "mv /tmp/jdufirmware/jdu_firmware /usr/local/gn/"
         subprocess.run(command, shell=True)
 
         f.write('Interrupt update completed!')
@@ -418,7 +403,7 @@ def run_testcase_update_jx_package(prepare_case_id, case_id, server_address, tmp
         print('Test case {} is finished.'.format(case_id))
         time.sleep(80)
 
-def run_testcase_update_fw_file(prepare_case_id, case_id, server_address, tmp):
+def testcase_17950(prepare_case_id, case_id, server_address, tmp):
     testcase_name = "17950 JXDU:Normal FW update without Interruption.[Use FW File](Linux JXDU 6.x or above)"
     print('Start to run the test case: {}'.format(case_name) + testcase_name)
     with open(log_path, "a") as f:
@@ -454,7 +439,6 @@ def run_testcase_update_fw_file(prepare_case_id, case_id, server_address, tmp):
             # judge the lowerfw.zip is exist or not,if existed,delete it.
             if os.path.exists('/tmp/lowerfw.zip'):
                 subprocess.Popen(['rm', '-rf', '/tmp/lowerfw.zip'])
-
             subprocess.Popen(['wget', '-P', '/tmp/', prepare_case_url], stdout=f).wait()
             # Use ./jfwu + lowerfw.zip to update the device
             subprocess.run(['./jfwu', '/tmp/lowerfw.zip'], stdout=f)
@@ -494,12 +478,11 @@ def run_testcase_update_fw_file(prepare_case_id, case_id, server_address, tmp):
         # f.write(f'The pacakge has unzip to the /tmp/fw\n')
         # f.flush()
         # time.sleep(5)
-        subprocess.Popen(['wget', '-P', '/tmp/', test_case_utl], stdout=f).wait()
+        # subprocess.Popen(['wget', '-P', '/tmp/', test_case_utl], stdout=f).wait()
 
         os.chdir('/usr/local/gn')
         command = "/usr/local/gn/jfwu /tmp/higherfw.zip"
         subprocess.Popen(command, shell=True).wait()
-
 
         f.write(f"{case_id} test is finished.")
         f.flush()
@@ -519,6 +502,7 @@ if __name__ == '__main__':
     server_address = "http://192.168.140.95/xpress/"
     current_test_rc = input("Which SR are you in:") + "/"
     device_name = input("Which device are you test:")
+    new_device_or_not=input("Is it a new device? (y/n)")
     current_test_rc = current_test_rc + device_name + "/"
 
     with open(log_path, "a") as f:
@@ -539,13 +523,9 @@ if __name__ == '__main__':
     # update_settings_case_list = [7551,7695,7692,6134,7555,7556]
     update_settings_case_list = []
 
-    # Add a new judgement to check if the device is new device list.
-
-    # A list contains new device name.
-    new_device_list = ['speak240','evolve240se','evolve230se', 'speak255', 'evolve255stereo', 'evolve255mono','evolve265flex']
 
     for case_name in update_fw_case_list:
-        if device_name in new_device_list:
+        if new_device_or_not == 'y':
             prepare_case = "lowerfw.zip"
         else:
             prepare_case = "16990p"
@@ -555,7 +535,7 @@ if __name__ == '__main__':
         elif case_name in [16990, 16991]:
             run_testcase_interrupt_jx_package(prepare_case, case_name, server_address, current_test_rc)
         elif case_name == 17950:
-            run_testcase_update_fw_file(prepare_case, case_name, server_address, current_test_rc)
+            testcase_17950(prepare_case, case_name, server_address, current_test_rc)
         else:
             run_testcase_update_jx_package(prepare_case, case_name, server_address, current_test_rc)
 

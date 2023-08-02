@@ -63,7 +63,7 @@ def delete_jduandjfwu_logs():
 
 def interrupt_update_fw_file():
     log_file = "/tmp/jfwu_log/jfwu.log"
-    target_text = "60%"
+    target_text = "50%"
     while True:
         try:
             with open(log_file, "r") as file:
