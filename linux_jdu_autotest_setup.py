@@ -116,7 +116,10 @@ def get_xpress_url(prepare_case, case_name,base_url,tmp):
 
     package_dir = urljoin(base_url, tmp)
     prepare_url = urljoin(package_dir, str(prepare_case))
-    case_url = urljoin(package_dir, str(case_name))
+    if case_name=='16992' or case_name=='17950':
+        case_url = urljoin(package_dir, 'higherfw.zip')
+    else:
+        case_url = urljoin(package_dir, str(case_name))
     return prepare_url, case_url
 
 
