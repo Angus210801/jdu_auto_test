@@ -539,7 +539,7 @@ if __name__ == '__main__':
     # Add a new judgement to check if the device is new device list.
 
     # A list contains new device name.
-    new_device_list = ['speak240', 'speak275', 'speak255', 'evolve250stereo', 'evolve250mono','evolve255stereo', 'evolve255mono','evolve265flex']
+    new_device_list = ['speak240','evolve240se','evolve230se', 'speak255', 'evolve255stereo', 'evolve255mono','evolve265flex']
 
     for case_name in update_fw_case_list:
         if device_name in new_device_list:
