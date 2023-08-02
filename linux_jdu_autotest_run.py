@@ -345,11 +345,11 @@ def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp
         usber = UsbBoxDriver_ubuntu()
         usber.connect_usb_box()
         time.sleep(5)
-
-        command = "/usr/local/gn/jfwu /tmp/fw/Firmware/J*"
-        subprocess.run(command, shell=True)
-
         f.write('Interrupt update completed!')
+        f.flush()
+
+        command = "/usr/local/gn/jfwu /tmp/higherfw.zip"
+        subprocess.run(command, shell=True)
 
         f.write(f"{case_id} test is finished.")
         f.flush()
@@ -546,19 +546,19 @@ if __name__ == '__main__':
         if case_name == 7692 or case_name == 7695:
             run_testcase_update_settings("7556", case_name, server_address, current_test_rc)
         elif case_name == 7556:
-            if device_name in new_device_list:
+            if new_device_or_not == 'y':
                 run_testcase_update_settings_for_new_device("7556p", case_name, server_address, current_test_rc)
             else:
                 run_testcase_update_settings("7556p", case_name, server_address, current_test_rc)
         elif case_name == 6134:
             run_testcase_update_settings("6134p", case_name, server_address, current_test_rc)
         elif case_name == 7555:
-            if device_name in new_device_list:
+            if new_device_or_not == 'y':
                 run_testcase_update_settings_for_new_device("7555p", case_name, server_address, current_test_rc)
             else:
                 run_testcase_update_settings("7555p", case_name, server_address, current_test_rc)
         else:
-            if device_name in new_device_list:
+            if new_device_or_not == 'y':
                 run_testcase_update_settings_for_new_device("7551p", case_name, server_address, current_test_rc)
             else:
                 run_testcase_update_settings("7551p", case_name, server_address, current_test_rc)
