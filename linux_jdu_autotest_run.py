@@ -286,34 +286,8 @@ def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp
 
         delete_xpress_file()
         delete_jduandjfwu_logs()
-        # Move the jdu_firmware file to /tmp/fw because the jdu.sh will call the jdu_firmware process.
-        # command = "mv /usr/local/gn/jdu_firmware /tmp/jdufirmware/"
-        # subprocess.Popen(command, shell=True).wait()
-        # f.write(f'jdu_firmware process is moved to /tmp/fw\n')
-
-        # # Run the test case
-        # process = subprocess.Popen(['./jdu.sh', test_case_utl], stdout=f)
-        # # Wait until the download is completed
-        # while not os.path.exists('/tmp/jdu_log/wget.log'):
-        #     time.sleep(3)
-        # while "zip’ saved" not in open('/tmp/jdu_log/wget.log').read():
-        #     time.sleep(3)
-        #     f.write(f'{case_id} JX package download not completed!\n'
-
-        # when download completed, end the ./jdu.sh process
-        # process.terminate()
-
-        # f.write(
-        #     f'This firmware update failed is because of the interrupt jdu update,we just want to download the fw package from server.\n')
-        # f.flush()
 
         time.sleep(60)
-        #
-        # subprocess.Popen(['7z', 'x', '/var/run/jabra/xpress_package_*.zip', '-pgn123!', '-o/tmp/fw/']).wait()
-        # f.write(f'Unzip the xpress package completed!\n')
-        # f.flush()
-        # time.sleep(10)
-
 
         subprocess.Popen(['wget', '-P', '/tmp/', test_case_utl], stdout=f).wait()
         os.chdir('/usr/local/gn')
@@ -337,12 +311,13 @@ def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp
         # Reconnect the usb box
         usber = UsbBoxDriver_ubuntu()
         usber.connect_usb_box()
-        time.sleep(5)
+        time.sleep(20)
         f.write('Interrupt update completed!')
         f.flush()
 
         command = "/usr/local/gn/jfwu /tmp/higherfw.zip"
         subprocess.run(command, shell=True)
+        f.write(f'--Reupdate is finish.\n')
 
         f.write(f"{case_id} test is finished.")
         f.flush()
@@ -500,11 +475,14 @@ if __name__ == '__main__':
 
     with open(log_path, "a") as f:
         os_version=get_os_version()
-        # subprocess.run(['cat', '/etc/issue'], stdout=f)
         f.write(f"OS version is {os_version}\n")
         f.flush()
         subprocess.run(['dpkg', '-l','jdu'], stdout=f)
 
+
+    subprocess.call(['gnome-terminal'])
+    time.sleep(1)
+    subprocess.call(['gnome-terminal', '-e', 'tail -f /tmp/auto_log/log'])
 
     if device_name == 'panacast20':
         # Panacast20 update is very fast, so we don't need to run the interrupt update case.
