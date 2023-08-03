@@ -154,19 +154,10 @@ def run_testcase_update_settings_for_new_device(prepare_case_id, case_id, server
         print('Test case {} is finished.'.format(case_id))
         time.sleep(80)
 def run_testcase_interrupt_jx_package(prepare_case_id, case_id, server_address, tmp):
-    """ This test case process is:
-        1. Download the lower fw package from the server.
-        2. Run the lower fw package.
-        3. Run the test case fw package from the server.
-        4. When update to the 60%, interrupt the update.
-        5. Connect the usb box again.
-        6. Run the test case jx package again.
-    """
     case_id= str(case_id)
     test_case_dict = {
         '16990': 'Disconnect the DUT during the FW update.[Use JX Package][Allow downgrade]',
         '16991': 'Disconnect the DUT during the FW udpate.[Use JX Package][Not allow downgrade]',
-        '16992': 'Disconnect the DUT during the FW update,for all individual components.[Use FW File]',
     }
 
     test_case_name = test_case_dict[case_id]
@@ -184,7 +175,7 @@ def run_testcase_interrupt_jx_package(prepare_case_id, case_id, server_address, 
         delete_jduandjfwu_logs()
 
         os.chdir('/usr/local/gn')
-        # Get the download_url and print the download link to the logs
+
         prepare_case_url = get_xpress_url(prepare_case_id, case_id, server_address, tmp)[0]
         test_case_url = get_xpress_url(prepare_case_id, case_id, server_address, tmp)[1]
         f.write(f"{prepare_case_url}\n")
@@ -192,14 +183,18 @@ def run_testcase_interrupt_jx_package(prepare_case_id, case_id, server_address, 
         f.flush()
 
         if prepare_case_url.endswith('lowerfw.zip'):
-            # judge the lowerfw.zip is exist or not,if existed,delete it.
             if os.path.exists('/tmp/lowerfw.zip'):
-                subprocess.Popen(['rm', '-rf', '/tmp/lowerfw.zip'])
+                subprocess.run(['./jfwu', '/tmp/lowerfw.zip'], stdout=f)
+                f.write(f"Device update to the lowfw.\n")
+                f.flush()
+                time.sleep(80)
+            else:
+                subprocess.Popen(['wget', '-P', '/tmp/', prepare_case_url], stdout=f).wait()
+                subprocess.run(['./jfwu', '/tmp/lowerfw.zip'], stdout=f)
+                f.write(f"Device update to the lowfw.\n")
+                f.flush()
+                time.sleep(80)
 
-            subprocess.Popen(['wget', '-P', '/tmp/', prepare_case_url], stdout=f).wait()
-            # Use ./jfwu + lowerfw.zip to update the device
-            time.sleep(10)
-            subprocess.run(['./jfwu', '/tmp/lowerfw.zip'], stdout=f)
         else:
             subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
 
@@ -282,8 +277,7 @@ def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp
             subprocess.Popen(['wget', '-P', '/tmp/', prepare_case_url], stdout=f).wait()
             # Use ./jfwu + lowerfw.zip to update the device
             subprocess.run(['./jfwu', '/tmp/lowerfw.zip'], stdout=f)
-            print("The lowerfw.zip is updated successfully.")
-
+            f.write(f"Device update to the lowfw.\n")
         else:
              subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
 
@@ -313,7 +307,7 @@ def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp
         #     f'This firmware update failed is because of the interrupt jdu update,we just want to download the fw package from server.\n')
         # f.flush()
 
-        time.sleep(10)
+        time.sleep(60)
         #
         # subprocess.Popen(['7z', 'x', '/var/run/jabra/xpress_package_*.zip', '-pgn123!', '-o/tmp/fw/']).wait()
         # f.write(f'Unzip the xpress package completed!\n')
@@ -516,7 +510,7 @@ if __name__ == '__main__':
         # Panacast20 update is very fast, so we don't need to run the interrupt update case.
         update_fw_case_list = [17950, 17951]
     else:
-        update_fw_case_list = [16990, 16991, 16992, 17950, 17951]
+        update_fw_case_list = [16992,16990, 16991, 17950, 17951]
         # update_fw_case_list = [16992,17950]
 
     update_settings_case_list = [7551,7695,7692,6134,7555,7556]
