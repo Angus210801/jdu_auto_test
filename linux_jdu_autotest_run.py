@@ -276,8 +276,8 @@ def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp
             # judge the lowerfw.zip is exist or not,if existed,delete it.
             if os.path.exists('/tmp/lowerfw.zip'):
                 subprocess.Popen(['rm', '-rf', '/tmp/lowerfw.zip'])
-            if os.path.exists('/tmp/fw/higerfw.zip'):
-                subprocess.Popen(['rm', '-rf', '/tmp/fw/higerfw.zip'])
+            if os.path.exists('/tmp/higerfw.zip'):
+                subprocess.Popen(['rm', '-rf', '/tmp/higerfw.zip'])
            
             subprocess.Popen(['wget', '-P', '/tmp/', prepare_case_url], stdout=f).wait()
             # Use ./jfwu + lowerfw.zip to update the device
@@ -319,6 +319,7 @@ def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp
         # f.write(f'Unzip the xpress package completed!\n')
         # f.flush()
         # time.sleep(10)
+
 
         subprocess.Popen(['wget', '-P', '/tmp/', test_case_utl], stdout=f).wait()
         os.chdir('/usr/local/gn')
