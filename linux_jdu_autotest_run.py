@@ -84,7 +84,6 @@ def run_testcase_update_settings(prepare_case_id, case_id, server_address, tmp):
         f.flush()
         print('Test case {} is finished.'.format(case_id))
         time.sleep(80)
-
 def run_testcase_update_settings_for_new_device(prepare_case_id, case_id, server_address, tmp):
     # Create a dict to store the test case name.
     # The key is the test case id, and the value is the test case name.
@@ -228,8 +227,6 @@ def run_testcase_interrupt_jx_package(prepare_case_id, case_id, server_address, 
         f.flush()
         print('Test case {} is finished.'.format(case_id))
         time.sleep(80)
-
-
 def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp):
 
 
@@ -326,8 +323,6 @@ def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp
         f.flush()
         print('Test case {} is finished.'.format(case_id))
         time.sleep(80)
-
-
 def run_testcase_update_jx_package(prepare_case_id, case_id, server_address, tmp):
     testcase_name = "17951 JXDU:Normal FW Update without Interruption.[Use JX Package](Linux JXDU 6.x or Above)"
     print('Start to run the test case: {}'.format(case_id) + testcase_name)
@@ -370,7 +365,6 @@ def run_testcase_update_jx_package(prepare_case_id, case_id, server_address, tmp
         f.write("------------------------------------------------------------\n\n\n\n")
         print('Test case {} is finished.'.format(case_id))
         time.sleep(80)
-
 def testcase_17950(prepare_case_id, case_id, server_address, tmp):
     testcase_name = "17950 JXDU:Normal FW update without Interruption.[Use FW File](Linux JXDU 6.x or above)"
     print('Start to run the test case: {}'.format(case_name) + testcase_name)
@@ -463,9 +457,11 @@ def testcase_17950(prepare_case_id, case_id, server_address, tmp):
 
 if __name__ == '__main__':
     start_time = time.time()
-
     os.chdir('/usr/local/gn')
     log_path = create_log_file("/tmp/auto_log/log")
+
+    command = f"tail -f {log_path}"
+    subprocess.run(["gnome-terminal", "--", "bash", "-c", command])
 
     server_address = "http://192.168.140.95/xpress/"
     current_test_rc = input("Which SR are you in:") + "/"
@@ -480,9 +476,6 @@ if __name__ == '__main__':
         subprocess.run(['dpkg', '-l','jdu'], stdout=f)
 
 
-    subprocess.call(['gnome-terminal'])
-    time.sleep(1)
-    subprocess.call(['gnome-terminal', '-e', 'tail -f /tmp/auto_log/log'])
 
     if device_name == 'panacast20':
         # Panacast20 update is very fast, so we don't need to run the interrupt update case.
