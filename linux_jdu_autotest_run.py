@@ -20,8 +20,8 @@ import os
 import subprocess
 import sys
 import time
-
 from linux_jdu_autotest_sendlog_email import *
+
 
 def run_testcase_update_settings(prepare_case_id, case_id, server_address, tmp):
     # Create a dict to store the test case name.
@@ -35,7 +35,7 @@ def run_testcase_update_settings(prepare_case_id, case_id, server_address, tmp):
         '7556': 'JX-ThinC:Install a ZIP file on end user environment with a later FW and set all settings set to default.'
     }
 
-    case_id=str(case_id)
+    case_id = str(case_id)
 
     if case_id not in test_case_dict.keys():
         print('The test case id is not in the test case dict.')
@@ -47,164 +47,135 @@ def run_testcase_update_settings(prepare_case_id, case_id, server_address, tmp):
         # Output the information to the terminal window
         print('Start to run the test case: {}'.format(case_id) + "--" + test_case_name)
 
-        f.write(f"Case {case_id}: {test_case_name}start to run:\n")
+        write_and_flush(f, f"Case {case_id}: {test_case_name}start to run:\n")
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        f.write(f"Timestamp: {timestamp}\n")
-        # 1. Run the prepared case first
-        f.write(f"step1:Run the prepare package{prepare_case_id} for the {case_id}\n")
-        f.flush()
-
+        write_and_flush(f, f"Start time: {timestamp}\n")
+        write_and_flush(f, f"step1:Run the prepare package{prepare_case_id} for the {case_id}\n")
 
         prepare_case_url = get_xpress_url(prepare_case_id, case_id, server_address, tmp)[0]
         test_case_url = get_xpress_url(prepare_case_id, case_id, server_address, tmp)[1]
-        f.write(f"{prepare_case_url}\n")
-        f.write(f"{test_case_url}\n")
-        f.flush()
+        write_and_flush(f, f"{prepare_case_url}\n")
+        write_and_flush(f, f"{test_case_url}\n")
 
+        write_and_flush(f, f"step1:case {case_id} prepare start:\n")
         subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
         time.sleep(80)
 
-
-        # 2. Compare the settings before and after the prepare case
-        f.write(f"Now, check the device settings is in prepare status: \n")
+        write_and_flush(f, f"Now, check the device settings is in prepare status: \n")
+        time.sleep(2)
         setting_compare(f)
-        # 3. Run the test case
-        f.write(f"\nstep2:case {case_id} prepare done, start to run case {case_id}:\n")
-        f.flush()
+
+        write_and_flush(f, f"\nstep2:case {case_id} prepare done, start to run case {case_id}:\n")
         subprocess.Popen(['./jdu.sh', test_case_url], stdout=f).wait()
-        # 4. Compare the settings after the test case
-        f.write(f"\nstep3:check if the settings changed correctly:\n")
-        f.flush()
+
+        write_and_flush(f, f"\nstep3:check if the settings changed correctly:\n")
         time.sleep(10)
         setting_compare(f)
 
-        # 5. Print the test finish info and dividing line to the log file
-        f.write(f"{case_id} test is finished.")
-        f.write("------------------------------------------------------------\n\n\n\n")
-        f.flush()
+        write_and_flush(f, f"Test case {case_id} is finished.\n-----------------\n\n\n\n")
         print('Test case {} is finished.'.format(case_id))
         time.sleep(80)
-def run_testcase_update_settings_for_new_device(prepare_case_id, case_id, server_address, tmp):
-    # Create a dict to store the test case name.
-    # The key is the test case id, and the value is the test case name.
+
+
+def run_testcase_update_settings_for_new_device(prepare_case_id, case_id, server_address, current_test_rc):
     test_case_dict = {
         '7551': 'JX-ThinC:Install a ZIP file on end user environment with a later FW and set all settings are changed.',
         '7555': 'JX-ThinC:Install a ZIP file on end user environment with a later FW and no setting change.',
         '7556': 'JX-ThinC:Install a ZIP file on end user environment with a later FW and set all settings set to default.'
     }
-
-    case_id=str(case_id)
-
-    if case_id not in test_case_dict.keys():
+    case_id = str(case_id)
+    test_case_name = test_case_dict.get(case_id)
+    if not test_case_name:
         print('The test case id is not in the test case dict.')
         sys.exit(1)
-    else:
-        test_case_name = test_case_dict[case_id]
 
     with open(log_path, "a") as f:
-        # Output the information to the terminal window
-        print('Start to run the test case: {}'.format(case_id) + "--" + test_case_name)
-
-
-        f.write(f"Case {case_id}: {test_case_name}start to run:\n")
+        print('Start to run the test case: {} -- {}'.format(case_id, test_case_name))
+        write_and_flush(f, f"Case {case_id}: {test_case_name} start to run:\n")
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        f.write(f"Timestamp: {timestamp}\n")
-        # 1. Run the prepared case first
-        f.write(f"step1:Run the prepare package{prepare_case_id} for the {case_id}\n")
-        f.flush()
+        write_and_flush(f, f"Timestamp: {timestamp}\n")
+        write_and_flush(f, f"step1:Run the prepare package {prepare_case_id} for the {case_id}\n")
 
-        prepare_case_url = get_xpress_url(prepare_case_id, case_id, server_address, tmp)[0]
-        test_case_url = get_xpress_url(prepare_case_id, case_id, server_address, tmp)[1]
-        f.write(f"{prepare_case_url}\n")
-        f.write(f"{test_case_url}\n")
-        f.flush()
+        prepare_case_url, test_case_url = get_xpress_url(prepare_case_id, case_id, server_address, current_test_rc)
+        write_and_flush(f, f"{prepare_case_url}\n")
+        write_and_flush(f, f"{test_case_url}\n")
 
-        lowerfw='lowerfw.zip'
-        lowerfw_url = server_address + tmp + lowerfw
-        f.write(f"{lowerfw_url}\n")
-        f.flush()
+        lowerfw_url = server_address + current_test_rc + 'lowerfw.zip'
+        write_and_flush(f,
+                        f"{lowerfw_url}\n-----step1.1:download the lower fw and update the device to lower fw-----\n")
+
         subprocess.Popen(['wget', '-P', '/tmp/', lowerfw_url], stdout=f).wait()
         subprocess.run(['./jfwu', '/tmp/lowerfw.zip'], stdout=f)
-        f.write(f"Device update to the lowfw.\n")
-        f.flush()
+        write_and_flush(f, f"Done the lower fw update.\n")
+
         time.sleep(80)
 
         subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
         time.sleep(80)
 
-
-        # 2. Compare the settings before and after the prepare case
-        f.write(f"Now, check the device settings is in prepare status: \n")
+        write_and_flush(f, f"Now, check the device settings is in prepare status: \n")
         setting_compare(f)
-        # 3. Run the test case
-        f.write(f"\nstep2:case {case_id} prepare done, start to run case {case_id}:\n")
-        f.flush()
+
+        write_and_flush(f, f"\nstep2:case {case_id} prepare done, start to run case {case_id}:\n")
         subprocess.Popen(['./jdu.sh', test_case_url], stdout=f).wait()
-        # 4. Compare the settings after the test case
-        f.write(f"\nstep3:check if the settings changed correctly:\n")
-        f.flush()
+
+        write_and_flush(f, f"\nstep3:check if the settings changed correctly:\n")
         time.sleep(10)
+
         setting_compare(f)
 
-        # 5. Print the test finish info and dividing line to the log file
-        f.write(f"{case_id} test is finished.")
-        f.write("------------------------------------------------------------\n\n\n\n")
-        f.flush()
+        write_and_flush(f, f"Test case {case_id} is finished.\n-----------------\n\n\n\n")
         print('Test case {} is finished.'.format(case_id))
         time.sleep(80)
-def run_testcase_interrupt_jx_package(prepare_case_id, case_id, server_address, tmp):
-    case_id= str(case_id)
+
+
+def run_testcase_interrupt_jx_package(prepare_case_id, case_id, server_address, current_test_rc):
+    case_id = str(case_id)
     test_case_dict = {
         '16990': 'Disconnect the DUT during the FW update.[Use JX Package][Allow downgrade]',
         '16991': 'Disconnect the DUT during the FW udpate.[Use JX Package][Not allow downgrade]',
     }
 
-    test_case_name = test_case_dict[case_id]
+    test_case_name = test_case_dict.get(case_id)
+    if not test_case_name:
+        print('The test case id is not in the test case dict.')
+        sys.exit(1)
 
     with open(log_path, "a") as f:
         # Print the timestamp to the log file
         print('Start to run the test case: {}'.format(case_id))
-        f.write(f"case {case_id}: {test_case_name} start to run:\n")
+        write_and_flush(f, f"case {case_id}: {test_case_name} start to run:")
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        f.write(f"Timestamp: {timestamp}\n")
-        f.write(f"step1:Run the prepare package {prepare_case_id} for the {case_id}\n")
-        f.flush()
+        write_and_flush(f, f"Timestamp: {timestamp}")
+        write_and_flush(f, f"step1:Run the prepare package {prepare_case_id} for the {case_id}")
 
         delete_xpress_file()
         delete_jduandjfwu_logs()
 
         os.chdir('/usr/local/gn')
 
-        prepare_case_url = get_xpress_url(prepare_case_id, case_id, server_address, tmp)[0]
-        test_case_url = get_xpress_url(prepare_case_id, case_id, server_address, tmp)[1]
-        f.write(f"{prepare_case_url}\n")
-        f.write(f"{test_case_url}\n")
-        f.flush()
+        prepare_case_url, test_case_url = get_xpress_url(prepare_case_id, case_id, server_address, current_test_rc)
+        write_and_flush(f, f"{prepare_case_url}")
+        write_and_flush(f, f"{test_case_url}")
 
         if prepare_case_url.endswith('lowerfw.zip'):
+            lowerfw_url = server_address + current_test_rc + 'lowerfw.zip'
             if os.path.exists('/tmp/lowerfw.zip'):
                 subprocess.run(['./jfwu', '/tmp/lowerfw.zip'], stdout=f)
-                f.write(f"Device update to the lowfw.\n")
-                f.flush()
-                time.sleep(80)
             else:
-                subprocess.Popen(['wget', '-P', '/tmp/', prepare_case_url], stdout=f).wait()
+                subprocess.Popen(['wget', '-P', '/tmp/', lowerfw_url], stdout=f).wait()
                 subprocess.run(['./jfwu', '/tmp/lowerfw.zip'], stdout=f)
-                f.write(f"Device update to the lowfw.\n")
-                f.flush()
-                time.sleep(80)
 
+            write_and_flush(f, f"Device update to the lowfw.")
+            time.sleep(80)
         else:
             subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
 
         time.sleep(80)
 
-
-        f.write(f"The prepare case is finished.\n")
-        f.flush()
+        write_and_flush(f, f"The prepare case is finished.")
         # Start to run the test case
-        f.write(f"\nstep2:case {case_id} prepare done, start to run case {case_id}:\n")
-        f.flush()
+        write_and_flush(f, f"\nstep2:case {case_id} prepare done, start to run case {case_id}:")
         command = "rm -rf /tmp/jdu_log/*"
         subprocess.run(command, shell=True)
         subprocess.Popen(['./jdu.sh', test_case_url], stdout=f)
@@ -213,24 +184,22 @@ def run_testcase_interrupt_jx_package(prepare_case_id, case_id, server_address, 
         # Wait for the jdu_firmware process to finish
         judge_jdu_process_ongoing()
         # Reconnect the usb box
-        f.write(f'--Usb box is reconnected!\n')
-        f.write(f'--Interrupt update completed!\n')
-        f.write(f'--Next, re-run the test case!\n')
-        f.flush()
+        write_and_flush(f, f'--Usb box is reconnected!')
+        write_and_flush(f, f'--Interrupt update completed!')
+        write_and_flush(f, f'--Next, re-run the test case!')
         # Set up the wait time for the usb box to be ready
         time.sleep(5)
         # Start to re-run the test case
         subprocess.Popen(['./jdu.sh', test_case_url], stdout=f).wait()
-        f.write(f"{case_id}: {test_case_name} test is finished.\n")
+        write_and_flush(f, f"{case_id}: {test_case_name} test is finished.")
         # Print the dividing line to the log file
-        f.write("------------------------------------------------------------\n\n\n\n")
-        f.flush()
-        print('Test case {} is finished.'.format(case_id))
+        write_and_flush(f, "------------------------------------------------------------\n\n\n\n")
+        print('Test case {} is finished.\n'.format(case_id))
         time.sleep(80)
-def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp):
 
 
-    testcase_name= "16992 JXDU:Disconnect the DUT during the FW update,for all individual components.[Use FW File]"
+def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, current_test_rc):
+    testcase_name = "16992 JXDU:Disconnect the DUT during the FW update,for all individual components.[Use FW File]"
 
     with open(log_path, "a") as f:
         print('Start to run the test case: {}'.format(case_id) + testcase_name)
@@ -246,8 +215,8 @@ def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp
         delete_jduandjfwu_logs()
         # Get the download_url and print the download link to the logs
 
-        prepare_case_url = get_xpress_url(prepare_case_id, case_id, server_address, tmp)[0]
-        test_case_utl=get_xpress_url(prepare_case_id, case_id, server_address, tmp)[1]
+        prepare_case_url = get_xpress_url(prepare_case_id, case_id, server_address, current_test_rc)[0]
+        test_case_utl = get_xpress_url(prepare_case_id, case_id, server_address, current_test_rc)[1]
         f.write(f"{prepare_case_url}\n")
         f.write(f"{test_case_utl}\n")
         f.flush()
@@ -261,7 +230,6 @@ def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp
         if not os.path.exists('/tmp/jdufirmware'):
             os.makedirs('/tmp/jdufirmware')
 
-
         os.chdir('/usr/local/gn')
 
         if prepare_case_url.endswith('lowerfw.zip'):
@@ -270,13 +238,13 @@ def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp
                 subprocess.Popen(['rm', '-rf', '/tmp/lowerfw.zip'])
             if os.path.exists('/tmp/higherfw.zip'):
                 subprocess.Popen(['rm', '-rf', '/tmp/higherfw.zip'])
-           
+
             subprocess.Popen(['wget', '-P', '/tmp/', prepare_case_url], stdout=f).wait()
             # Use ./jfwu + lowerfw.zip to update the device
             subprocess.run(['./jfwu', '/tmp/lowerfw.zip'], stdout=f)
             f.write(f"Device update to the lowfw.\n")
         else:
-             subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
+            subprocess.Popen(['./jdu.sh', prepare_case_url], stdout=f).wait()
 
         f.write(f"The prepare case is run finished.")
         f.flush()
@@ -323,7 +291,9 @@ def run_testcase_interrupt_fw_file(prepare_case_id, case_id, server_address, tmp
         f.flush()
         print('Test case {} is finished.'.format(case_id))
         time.sleep(80)
-def run_testcase_update_jx_package(prepare_case_id, case_id, server_address, tmp):
+
+
+def run_testcase_update_jx_package(prepare_case_id, case_id, server_address, current_test_rc):
     testcase_name = "17951 JXDU:Normal FW Update without Interruption.[Use JX Package](Linux JXDU 6.x or Above)"
     print('Start to run the test case: {}'.format(case_id) + testcase_name)
     with open(log_path, "a") as f:
@@ -336,8 +306,8 @@ def run_testcase_update_jx_package(prepare_case_id, case_id, server_address, tmp
         delete_xpress_file()
         delete_jduandjfwu_logs()
         # Get the download_url and print the download link to the logs
-        prepare_case_url = get_xpress_url(prepare_case_id, case_id, server_address, tmp)[0]
-        test_case_utl = get_xpress_url(prepare_case_id, case_id, server_address, tmp)[1]
+        prepare_case_url = get_xpress_url(prepare_case_id, case_id, server_address, current_test_rc)[0]
+        test_case_utl = get_xpress_url(prepare_case_id, case_id, server_address, current_test_rc)[1]
 
         f.write(f"{prepare_case_url}\n")
         f.write(f"{test_case_utl}\n")
@@ -365,7 +335,9 @@ def run_testcase_update_jx_package(prepare_case_id, case_id, server_address, tmp
         f.write("------------------------------------------------------------\n\n\n\n")
         print('Test case {} is finished.'.format(case_id))
         time.sleep(80)
-def testcase_17950(prepare_case_id, case_id, server_address, tmp):
+
+
+def testcase_17950(prepare_case_id, case_id, server_address, current_test_rc):
     testcase_name = "17950 JXDU:Normal FW update without Interruption.[Use FW File](Linux JXDU 6.x or above)"
     print('Start to run the test case: {}'.format(case_name) + testcase_name)
     with open(log_path, "a") as f:
@@ -380,8 +352,8 @@ def testcase_17950(prepare_case_id, case_id, server_address, tmp):
         delete_xpress_file()
         delete_jduandjfwu_logs()
         # Get the download_url and print the download link to the logs
-        prepare_case_url = get_xpress_url(prepare_case_id, case_id, server_address, tmp)[0]
-        test_case_utl = get_xpress_url(prepare_case_id, case_id, server_address, tmp)[1]
+        prepare_case_url = get_xpress_url(prepare_case_id, case_id, server_address, current_test_rc)[0]
+        test_case_utl = get_xpress_url(prepare_case_id, case_id, server_address, current_test_rc)[1]
         f.write(f"{prepare_case_url}\n")
         f.write(f"{test_case_utl}\n")
         f.flush()
@@ -414,34 +386,8 @@ def testcase_17950(prepare_case_id, case_id, server_address, tmp):
 
         delete_xpress_file()
         delete_jduandjfwu_logs()
-        # Move the jdu_firmware file to /tmp/fw because the jdu.sh will call the jdu_firmware process.
-        # command = "mv /usr/local/gn/jdu_firmware /tmp/jdufirmware/"
-        # subprocess.Popen(command, shell=True).wait()
-        # f.write(f'jdu_firmware process is moved to /tmp/jdufirmware/\n')
-        # f.flush()
-
-        # process = subprocess.Popen(['./jdu.sh', test_case_utl], stdout=f)
-        #
-        # while not os.path.exists('/tmp/jdu_log/wget.log'):
-        #     time.sleep(1)
-        # while "zip’ saved" not in open('/tmp/jdu_log/wget.log').read():
-        #     time.sleep(2)
-        #     f.write(f'Download not completed!\n')
 
         f.write(f'{case_id} JX package downlaod completed!\n')
-
-        # when download completed, end the ./jdu.sh process
-        # process.terminate()
-        # f.write(f'Terminate the process once the download complete.\n')
-        # f.flush()
-        time.sleep(2)
-        #
-        # subprocess.run(['7z', 'x', '/var/run/jabra/xpress_package_*.zip', '-pgn123!', '-o/tmp/fw/'])
-        # f.write(f'The pacakge has unzip to the /tmp/fw\n')
-        # f.flush()
-        # time.sleep(5)
-        # subprocess.Popen(['wget', '-P', '/tmp/', test_case_utl], stdout=f).wait()
-
         os.chdir('/usr/local/gn')
         command = "/usr/local/gn/jfwu /tmp/higherfw.zip"
         subprocess.Popen(command, shell=True).wait()
@@ -455,6 +401,34 @@ def testcase_17950(prepare_case_id, case_id, server_address, tmp):
         time.sleep(80)
 
 
+def run_testcase_fw_update(case_name, server_address, current_test_rc, new_device_or_not):
+    prepare_case = "lowerfw.zip" if new_device_or_not == 'y' else "16990p"
+
+    test_case_mapping = {
+        16992: run_testcase_interrupt_fw_file,
+        16990: run_testcase_interrupt_jx_package,
+        16991: run_testcase_interrupt_jx_package,
+        17950: testcase_17950,
+    }
+    # If case_name is not found in the mapping, default to run_testcase_update_jx_package
+    test_case_function = test_case_mapping.get(case_name, run_testcase_update_jx_package)
+    test_case_function(prepare_case, case_name, server_address, current_test_rc)
+
+
+def run_testcase_update_settings_index(case_name, server_address, current_test_rc, new_device_or_not):
+    test_case_mapping = {
+        7692: ("7556",),
+        7695: ("7556",),
+        7556: ("7556p",) if new_device_or_not == 'y' else ("7556p",),
+        6134: ("6134p",),
+        7555: ("7555p",) if new_device_or_not == 'y' else ("7555p",),
+    }
+    default_case = ("7551p",)
+
+    test_case_args = test_case_mapping.get(case_name, default_case)
+    run_testcase_update_settings(*test_case_args, server_address, current_test_rc)
+
+
 if __name__ == '__main__':
     start_time = time.time()
     os.chdir('/usr/local/gn')
@@ -466,66 +440,31 @@ if __name__ == '__main__':
     server_address = "http://192.168.140.95/xpress/"
     current_test_rc = input("Which SR are you in:") + "/"
     device_name = input("Which device are you test:")
-    new_device_or_not=input("Is it a new device? (y/n)")
+    new_device_or_not = input("Is it a new device? (y/n)")
     current_test_rc = current_test_rc + device_name + "/"
 
     with open(log_path, "a") as f:
-        os_version=get_os_version()
+        os_version = get_os_version()
         f.write(f"OS version is {os_version}\n")
         f.flush()
-        subprocess.run(['dpkg', '-l','jdu'], stdout=f)
-
-
+        subprocess.run(['dpkg', '-l', 'jdu'], stdout=f)
 
     if device_name == 'panacast20':
         # Panacast20 update is very fast, so we don't need to run the interrupt update case.
         update_fw_case_list = [17950, 17951]
     else:
-        update_fw_case_list = [16992,16990, 16991, 17950, 17951]
+        update_fw_case_list = [16992, 16990, 16991, 17950, 17951]
         # update_fw_case_list = [16992,17950]
 
-    update_settings_case_list = [7551,7695,7692,6134,7555,7556]
-    # update_settings_case_list = []
-
-
     for case_name in update_fw_case_list:
-        if new_device_or_not == 'y':
-            prepare_case = "lowerfw.zip"
-        else:
-            prepare_case = "16990p"
-
-        if case_name == 16992:
-            run_testcase_interrupt_fw_file(prepare_case, case_name, server_address, current_test_rc)
-        elif case_name in [16990, 16991]:
-            run_testcase_interrupt_jx_package(prepare_case, case_name, server_address, current_test_rc)
-        elif case_name == 17950:
-            testcase_17950(prepare_case, case_name, server_address, current_test_rc)
-        else:
-            run_testcase_update_jx_package(prepare_case, case_name, server_address, current_test_rc)
+        run_testcase_fw_update(case_name, server_address, current_test_rc, new_device_or_not)
 
     print("FW update case is finished.\n")
     print("Start to run the settings update case.\n")
 
+    update_settings_case_list = [7551, 7695, 7692, 6134, 7555, 7556]
     for case_name in update_settings_case_list:
-        if case_name == 7692 or case_name == 7695:
-            run_testcase_update_settings("7556", case_name, server_address, current_test_rc)
-        elif case_name == 7556:
-            if new_device_or_not == 'y':
-                run_testcase_update_settings_for_new_device("7556p", case_name, server_address, current_test_rc)
-            else:
-                run_testcase_update_settings("7556p", case_name, server_address, current_test_rc)
-        elif case_name == 6134:
-            run_testcase_update_settings("6134p", case_name, server_address, current_test_rc)
-        elif case_name == 7555:
-            if new_device_or_not == 'y':
-                run_testcase_update_settings_for_new_device("7555p", case_name, server_address, current_test_rc)
-            else:
-                run_testcase_update_settings("7555p", case_name, server_address, current_test_rc)
-        else:
-            if new_device_or_not == 'y':
-                run_testcase_update_settings_for_new_device("7551p", case_name, server_address, current_test_rc)
-            else:
-                run_testcase_update_settings("7551p", case_name, server_address, current_test_rc)
+        run_testcase_update_settings_index(case_name, server_address, current_test_rc, new_device_or_not)
 
     rename_log_file(device_name)
 
@@ -534,43 +473,8 @@ if __name__ == '__main__':
 
     switch_network()
     sleep(15)
-    send_email(device_name,os_version)
+    send_email(device_name, os_version)
     sleep(15)
     recover_network()
 
     print("Test finish, the test run time is: " + str(total_time))
-
-'''
-Group01 : FW Update case:
-
-    16990 JXDU:Disconnect the DUT during the FW update.[Use JX Package][Allow downgrade]
-    16991 JXDU:Disconnect the DUT during the FW udpate.[Use JX Package][Not allow downgrade]
-    16992 JXDU:Disconnect the DUT during the FW update,for all individual components.[Use FW File]
-    17950 JXDU:Normal FW update without Interruption.[Use FW File](Linux JXDU 6.x or above)
-    17951 JXDU:Normal FW Update without Interruption.[Use JX Package](Linux JXDU 6.x or Above)
-
-Group02 :FW Update & Settings Configure case:
-    
-    6098 JX-ThinC: Verify zip package content and JXDU version by creating a ZIP file. - - It is a check test case, not need tu run code so dont need another prepare pakcage for this.
-    6134 JX-ThinC:All device settings and FW set to "Leave Unchange",all settings set to Protected.
-    7692 JX-ThinC:All settings in the device can be change from default value to min.value with installation of .zip file at the end user PC,no FW change.
-    7695 JX-ThinC:All settings in the device can be change from default value to max.value with installation of .zip file at the end user PC,no FW change.
-    7551 JX-ThinC:Install a ZIP file on end user environment with a later FW and set all settings are changed.
-    7555 JX-ThinC:Install a ZIP file on end user environment with a later FW and no setting change.
-    7556 JX-ThinC:Install a ZIP file on end user environment with a later FW and set all settings set to default.
-
-Group03 :Prepare package for 01:
-    16990p: Lower FW and not settings change,downgrade==allow.
-    16991p: same with 16990p
-    16992p: same with 16990p
-    17950p: same with 16990p
-    17951p: same with 16990p
-
-Group04 :Prepare testcase for 02:
-    6134p: Latest FW and Random settings, Protect = Not.
-    7692p: Use the pacakge == 7556.
-    7695p: Use the pacakge == 7556.
-    7551p: Lower FW and Random settigns.
-    7555p: Lower FW and settings = Max value.
-    7556p: Lower FW and not default settings.
-'''

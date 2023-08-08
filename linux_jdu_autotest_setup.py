@@ -22,6 +22,10 @@ from urllib.parse import urljoin
 from linux_jdu_autotest_usb_box_new import *
 import time
 
+
+def write_and_flush(f,message):
+    f.write(message+"\n")
+    f.flush()
 def get_os_version():
     version = os.popen('lsb_release -r').read().split()[1]
     return version
