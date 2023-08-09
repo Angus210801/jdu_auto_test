@@ -142,8 +142,6 @@ def run_testcase_interrupt_jx_package(prepare_case_id, case_id, server_address, 
         sys.exit(1)
 
     with open(log_path, "a") as f:
-        # Print the timestamp to the log file
-        print('Start to run the test case: {}'.format(case_id))
         write_and_flush(f, f"case {case_id}: {test_case_name} start to run:")
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         write_and_flush(f, f"Timestamp: {timestamp}")

@@ -27,7 +27,7 @@ def send_email(device_name,os_version):
     msg.attach(MIMEText(message, "plain"))
 
     # Add attachment
-    filename = "/tmp/auto_log/"+ device_name +"_log.txt"  # 附件文件路径
+    filename = "/tmp/auto_log/"+ device_name +"_log.txt"
     attachment = open(filename, "rb")
 
     part = MIMEBase("application", "octet-stream")
