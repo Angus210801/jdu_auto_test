@@ -434,8 +434,8 @@ if __name__ == '__main__':
     os.chdir('/usr/local/gn')
     log_path = create_log_file("/tmp/auto_log/log")
 
-    command = f"tail -f {log_path}"
-    subprocess.run(["gnome-terminal", "--", "bash", "-c", command])
+    command = "tail -f {log_path}"
+    subprocess.call(['gnome-terminal', '--', 'bash', '-c', 'ls /tmp; exec bash'])
 
     server_address = "http://192.168.140.95/xpress/"
     current_test_rc = input("Which SR are you in:") + "/"
