@@ -428,20 +428,23 @@ def run_testcase_update_settings_index(case_name, server_address, current_test_r
     test_case_args = test_case_mapping.get(case_name, default_case)
     run_testcase_update_settings(*test_case_args, server_address, current_test_rc)
 
+def print_log():
+    with open('/tmp/auto_log/log', 'r') as file:
+        data = file.read()
+        print(data)
+
 
 if __name__ == '__main__':
     start_time = time.time()
     os.chdir('/usr/local/gn')
     log_path = create_log_file("/tmp/auto_log/log")
 
-    command = "tail -f {log_path}"
-    subprocess.call(['gnome-terminal', '--', 'bash', '-c', 'ls /tmp; exec bash'])
-
     server_address = "http://192.168.140.95/xpress/"
     current_test_rc = input("Which SR are you in:") + "/"
     device_name = input("Which device are you test:")
     new_device_or_not = input("Is it a new device? (y/n)")
     current_test_rc = current_test_rc + device_name + "/"
+    print_log()
 
     with open(log_path, "a") as f:
         os_version = get_os_version()
@@ -452,12 +455,15 @@ if __name__ == '__main__':
     if device_name == 'panacast20':
         # Panacast20 update is very fast, so we don't need to run the interrupt update case.
         update_fw_case_list = [17950, 17951]
+        print_log()
     else:
         update_fw_case_list = [16992, 16990, 16991, 17950, 17951]
         # update_fw_case_list = [16992,17950]
+        print_log()
 
     for case_name in update_fw_case_list:
         run_testcase_fw_update(case_name, server_address, current_test_rc, new_device_or_not)
+        print_log()
 
     print("FW update case is finished.\n")
     print("Start to run the settings update case.\n")
@@ -465,6 +471,7 @@ if __name__ == '__main__':
     update_settings_case_list = [7551, 7695, 7692, 6134, 7555, 7556]
     for case_name in update_settings_case_list:
         run_testcase_update_settings_index(case_name, server_address, current_test_rc, new_device_or_not)
+        print_log()
 
     rename_log_file(device_name)
 
