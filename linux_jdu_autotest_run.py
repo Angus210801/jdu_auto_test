@@ -424,7 +424,7 @@ def run_testcase_update_settings_index(case_name, server_address, current_test_r
     default_case = ("7551p",)
 
     test_case_args = test_case_mapping.get(case_name, default_case)
-    run_testcase_update_settings(*test_case_args, server_address, current_test_rc)
+    run_testcase_update_settings(case_name,*test_case_args, server_address, current_test_rc)
 
 def print_log():
     with open('/tmp/auto_log/log', 'r') as file:
@@ -459,9 +459,9 @@ if __name__ == '__main__':
         # update_fw_case_list = [16992,17950]
         print_log()
 
-    for case_name in update_fw_case_list:
-        run_testcase_fw_update(case_name, server_address, current_test_rc, new_device_or_not)
-        print_log()
+    # for case_name in update_fw_case_list:
+    #     run_testcase_fw_update(case_name, server_address, current_test_rc, new_device_or_not)
+    #     print_log()
 
     print("FW update case is finished.\n")
     print("Start to run the settings update case.\n")
