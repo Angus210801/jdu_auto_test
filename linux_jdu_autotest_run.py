@@ -425,7 +425,7 @@ def run_testcase_update_settings_index(case_name, server_address, current_test_r
     default_case = ("7551p",)
 
     test_case_value = test_case_mapping.get(case_name, default_case)[0]
-    run_testcase_update_settings(case_name,test_case_value, server_address, current_test_rc)
+    run_testcase_update_settings(test_case_value,case_name,server_address, current_test_rc)
 
 def print_log():
     with open('/tmp/auto_log/log', 'r') as file:
