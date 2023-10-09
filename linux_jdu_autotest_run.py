@@ -415,17 +415,17 @@ def run_testcase_fw_update(case_name, server_address, current_test_rc, new_devic
 
 def run_testcase_update_settings_index(case_name, server_address, current_test_rc, new_device_or_not):
     test_case_mapping = {
-        7551: ("7551p"),
+        7551: ("7551p",),
         7692: ("7556",),
         7695: ("7556",),
-        7556: ("7556p",) if new_device_or_not == 'y' else ("7556p",),
+        7556: ("7556p",),
         6134: ("6134p",),
-        7555: ("7555p",) if new_device_or_not == 'y' else ("7555p",),
+        7555: ("7555p",),
     }
     default_case = ("7551p",)
 
-    test_case_args = test_case_mapping.get(case_name, default_case)
-    run_testcase_update_settings(case_name,*test_case_args, server_address, current_test_rc)
+    test_case_value = test_case_mapping.get(case_name, default_case)[0]
+    run_testcase_update_settings(case_name,test_case_value, server_address, current_test_rc)
 
 def print_log():
     with open('/tmp/auto_log/log', 'r') as file:
