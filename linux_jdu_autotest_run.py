@@ -415,6 +415,7 @@ def run_testcase_fw_update(case_name, server_address, current_test_rc, new_devic
 
 def run_testcase_update_settings_index(case_name, server_address, current_test_rc, new_device_or_not):
     test_case_mapping = {
+        7551: ("7551p"),
         7692: ("7556",),
         7695: ("7556",),
         7556: ("7556p",) if new_device_or_not == 'y' else ("7556p",),
